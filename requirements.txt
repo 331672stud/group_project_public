@@ -1,0 +1,7 @@
+# Add your Python dependencies here
+psycopg2
+fastAPI
+requests 
+requests-oauthlib
+dotenv
+typing
