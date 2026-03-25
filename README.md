@@ -1,34 +1,30 @@
-# Python Development Template
+api_endpoints:
 
-Minimal Python template with Docker and code-server for remote VSCode development.
+endpointy dla frontendu
 
-## Setup
+db_operations:
 
-1. **Clone and navigate:**
-   ```bash
-   git clone <repo> my-python-project
-   cd my-python-project
-   ```
+metody działania na bazie postgres
 
-2. **Start development environment:**
-   ```bash
-   docker compose up -d
-   ```
+logic.py:
 
-3. **Access VSCode:**
-   - Open: `http://localhost:8443`
-   - Password: `dev`
+skrypt testujący samo logowanie do api
 
-## Using as Base for New Projects
+usos_api:
 
-1. Remove git history: `rm -rf .git`
-2. Add your dependencies to `requirements.txt`
-3. Rebuild: `docker compose build --no-cache`
+metody logowania do api/działania na nim
 
-## Common Commands
 
-- Start: `docker compose up -d`
-- Stop: `docker compose down`
-- Rebuild: `docker compose build --no-cache`
-- View logs: `docker compose logs -f dev`
-- Execute command: `docker compose exec dev python script.py`
+Kontenery:
+
+project_dev:
+
+do remote developmentu
+
+project_web:
+
+powinno uruchamiać serwis na localhoscie ale nie wiem czy dziala xdd
+
+project_db:
+
+powinno uruchamiać serwer bazy ale też nie wiem czy działa
