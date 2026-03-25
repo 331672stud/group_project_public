@@ -1,6 +1,8 @@
 # Add your Python dependencies here
 psycopg2
-fastAPI
+fastapi
+itsdangerous
+uvicorn
 requests 
 requests-oauthlib
 dotenv

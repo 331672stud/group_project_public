@@ -12,7 +12,9 @@ services:
     stdin_open: true
     tty: true
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: project_web
     ports:
       - "8000:8000"

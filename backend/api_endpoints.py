@@ -1,3 +1,4 @@
+import time
 import psycopg2
 from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import RedirectResponse
@@ -21,7 +22,6 @@ from db_operations import (
     get_assigned_tasks,
     assign_task
 )
-from api_endpoints import app as api_app
 
 CONSUMER_KEY = os.getenv("USOS_CONSUMER_KEY", "YOUR_KEY")
 CONSUMER_SECRET = os.getenv("USOS_CONSUMER_SECRET", "YOUR_SECRET")
@@ -29,13 +29,21 @@ CONSUMER_SECRET = os.getenv("USOS_CONSUMER_SECRET", "YOUR_SECRET")
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "SUPER_SECRET_KEY"))
 
-conn = psycopg2.connect(
-    host="localhost",
-    database="postgres",
-    user="postgres",
-    password="password",
-    port=5432
-)
+for _ in range(30):  # retry for ~30 seconds
+    try:
+        conn = psycopg2.connect(
+            host="db",
+            port=5432,
+            user="postgres",
+            password="password",
+            database="postgres"
+        )
+        break
+    except psycopg2.OperationalError:
+        print("Waiting for database...")
+        time.sleep(1)
+else:
+    raise Exception("Database not available")
 
 # login check
 def get_current_user(request: Request):
