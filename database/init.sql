@@ -36,3 +36,22 @@ CREATE TABLE assigned_tasks (
     assigner_id INTEGER REFERENCES users(id),
     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE course_tasks (
+    id SERIAL PRIMARY KEY,
+    course_id INTEGER REFERENCES courses(id),
+    task_id INTEGER REFERENCES tasks(id),
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE task_tags (
+    id SERIAL PRIMARY KEY,
+    task_id INTEGER REFERENCES tasks(id), ON DELETE CASCADE,
+    tag_id INTEGER REFERENCES tags(id), ON DELETE CASCADE,
+    UNIQUE(task_id, tag_id)
+);

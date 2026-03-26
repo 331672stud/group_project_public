@@ -1,20 +1,26 @@
 import time
 import psycopg2
-from fastapi import FastAPI, Request, Response, Depends, HTTPException
+from typing import Optional
+import os
+
+from fastapi import FastAPI, Request, Response, Depends, HTTPException, APIRouter
 from fastapi.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 from requests_oauthlib import OAuth1Session
-from typing import Optional
-import webbrowser
-import os
-from usos_api import (
+
+from usos_api.usos_api_auth import (
     get_request_token,
     authorize_token,
     get_access_token,
-    get_user_courses,
     revoke_access_token
 )
-from db_operations import (
+
+from usos_api.usos_api_scraper import (
+    get_user_courses,
+    get_user_id
+)
+
+from db_operations.db_operations import (
     insert_user,
     submit_solution,
     add_task,
@@ -25,9 +31,6 @@ from db_operations import (
 
 CONSUMER_KEY = os.getenv("USOS_CONSUMER_KEY", "YOUR_KEY")
 CONSUMER_SECRET = os.getenv("USOS_CONSUMER_SECRET", "YOUR_SECRET")
-
-app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "SUPER_SECRET_KEY"))
 
 for _ in range(30):  # retry for ~30 seconds
     try:
@@ -52,22 +55,26 @@ def get_current_user(request: Request):
         raise HTTPException(status_code=401, detail="Not authenticated")
     return user_id
 
+#chroniony router
+protected_router = APIRouter(
+    dependencies=[Depends(get_current_user)]
+)
+
 # api endpoints
 @app.get("/login")
 async def login(request: Request):
     try:
-        req_token, req_secret = get_request_token()
+        req_token, req_secret = get_request_token(CONSUMER_KEY, CONSUMER_SECRET)
     except Exception as e:
         raise HTTPException(500, f"Failed to get request token: {str(e)}")
-    if "oauth_token" not in req_token:
-        return {"error": "Invalid response from OAuth provider"}
     try:
         request.session["request_token"] = req_token
         request.session["request_secret"] = req_secret
     except Exception as e:
         raise HTTPException(500, f"Failed to store request token in session: {str(e)}")
     # autoryzacja
-    authorize_token(req_token)
+    authorize_url = authorize_token(req_token)
+    return RedirectResponse(authorize_url)
 
 @app.get("/callback")
 async def callback(
@@ -93,44 +100,61 @@ async def callback(
         )
     except Exception as e:
         raise HTTPException(500, f"Failed to get access token: {str(e)}")
+    
+    request.session["access_token"] = access_token
+    request.session["access_secret"] = access_secret
 
-    return {"access token": access_token}
+    user_id = get_user_id(CONSUMER_KEY, CONSUMER_SECRET,
+                access_token, access_secret)
+    
+    request.session["user_id"] = user_id
+
+    return {"login successful, user_id": user_id}
 
 @app.get("/logout")
 async def logout(request: Request):
     revoke_access_token(
         CONSUMER_KEY, CONSUMER_SECRET,
         request.session.get("access_token"), request.session.get("access_secret"),
-        deauthorize=True
+        deauthorize=False
     )
     request.session.clear()
     return {"message": "Logged out"}
 
-@app.get("/my-courses")
+@protected_router.get("/my-courses")
 async def my_courses(request: Request):
     access_token = request.session.get("access_token")
     access_secret = request.session.get("access_secret")
     if not access_token or not access_secret:
         raise HTTPException(401, "Access token missing")
 
-    courses = get_user_courses(access_token, access_secret)
+    courses = get_user_courses(CONSUMER_KEY, CONSUMER_SECRET, access_token, access_secret)
     return courses
 
-@app.get("/profile")
+@protected_router.get("/profile")
 def profile(request: Request):
     user_id = get_current_user(request)
     return {"message": "Profile endpoint", "user_id": user_id}
 
-@app.get("/tasks")
-def tasks():
-    return {"message": "Tasks endpoint"}
+@protected_router.get("/tasks")
+def tasks(request: Request):
+    assigned_tasks = get_assigned_tasks(conn, get_current_user(request))
+    if(not assigned_tasks):
+        return {"message": "No assigned tasks"}
+    return {"message": "Assigned tasks", "tasks": assigned_tasks}
 
-@app.get("/submissions")
-def submissions():
+def public_tasks(request: Request):
+    tasks = get_all_tasks(conn)
+    return {"message": "All tasks", "tasks": tasks}
+
+@protected_router.get("/submissions")
+def submissions(request: Request):
     return {"message": "Submissions endpoint"}
 
-@app.get("/tasks/{task_id}")
-def get_task(task_id: int):
+@protected_router.get("/tasks/{task_id}")
+def get_task(request: Request, task_id: int):
     return {"message": f"Get task with ID {task_id}"}
     
-
+app = FastAPI()
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "SUPER_SECRET_KEY"))
+app.include_router(protected_router)

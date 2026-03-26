@@ -1,4 +1,3 @@
-
 def insert_user(db, username, token):
     cursor = db.cursor()
     cursor.execute("INSERT INTO users (username, token) VALUES (%s, %s)", (username, token))
@@ -47,3 +46,19 @@ def assign_task(db, task_id, target_id, assigner_id):
     db.commit()
     cursor.close()
     return "Task assigned successfully."
+
+def get_course_tasks(db, course_id):
+    cursor = db.cursor()
+    cursor.execute("SELECT t.id, t.title FROM tasks t JOIN course_tasks ct ON t.id = ct.task_id WHERE ct.course_id = %s", (course_id,))
+    tasks = cursor.fetchall()
+    cursor.close()
+    return tasks
+
+def filter_by_tags(db, tags):
+    cursor = db.cursor()
+    query = "SELECT id, title FROM tasks WHERE "
+    query += " OR ".join(["%s = ANY(tags)" for _ in tags])
+    cursor.execute(query, tags)
+    tasks = cursor.fetchall()
+    cursor.close()
+    return tasks
