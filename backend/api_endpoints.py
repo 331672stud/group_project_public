@@ -17,7 +17,7 @@ from usos_api.usos_api_auth import (
 
 from usos_api.usos_api_scraper import (
     get_user_courses,
-    get_user_id
+    get_user
 )
 
 from db_operations.db_operations import (
@@ -26,7 +26,8 @@ from db_operations.db_operations import (
     add_task,
     get_all_tasks,
     get_assigned_tasks,
-    assign_task
+    assign_task,
+    get_user_data,
 )
 
 CONSUMER_KEY = os.getenv("USOS_CONSUMER_KEY", "YOUR_KEY")
@@ -50,15 +51,23 @@ else:
 
 # login check
 def get_current_user(request: Request):
+    """sprawdza czy użytkownik jest zalogowany,
+       zwraca id jeśli przypisane.
+    Args:
+        request (Request): sesja
+
+    Raises:
+        HTTPException: błąd jeśli nie jesteś zalogowany
+
+    Returns:
+        int: id użytkownika
+    """
     user_id = request.session.get("user_id")
     if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        raise HTTPException(status_code=401, detail="Nie zalogowany")
     return user_id
 
-#chroniony router
-protected_router = APIRouter(
-    dependencies=[Depends(get_current_user)]
-)
+app = FastAPI()
 
 # api endpoints
 @app.get("/login")
@@ -104,14 +113,25 @@ async def callback(
     request.session["access_token"] = access_token
     request.session["access_secret"] = access_secret
 
-    user_id = get_user_id(CONSUMER_KEY, CONSUMER_SECRET,
+    user_data = get_user(CONSUMER_KEY, CONSUMER_SECRET,
                 access_token, access_secret)
     
-    request.session["user_id"] = user_id
+    request.session["user_id"] = user_data["id"]
+    insert_user(conn, user_data["id"], user_data["first_name"], user_data["last_name"], user_data["staff_status"])
 
-    return {"login successful, user_id": user_id}
+    return {"login successful, user_id": user_data["id"]}
 
-@app.get("/logout")
+@app.get("/public-tasks")
+def public_tasks(request: Request):
+    tasks = get_all_tasks(conn)
+    return {"message": "All tasks", "tasks": tasks}
+
+#chroniony router
+protected_router = APIRouter(
+    dependencies=[Depends(get_current_user)]
+)
+
+@protected_router.get("/logout")
 async def logout(request: Request):
     revoke_access_token(
         CONSUMER_KEY, CONSUMER_SECRET,
@@ -133,8 +153,8 @@ async def my_courses(request: Request):
 
 @protected_router.get("/profile")
 def profile(request: Request):
-    user_id = get_current_user(request)
-    return {"message": "Profile endpoint", "user_id": user_id}
+    user_data = get_user_data(conn, get_current_user(request))
+    return {"message": "Profile endpoint", "user_id": get_current_user(request), "first name": user_data[1], "last name": user_data[2], "user_type": user_data[3]}
 
 @protected_router.get("/tasks")
 def tasks(request: Request):
@@ -143,10 +163,6 @@ def tasks(request: Request):
         return {"message": "No assigned tasks"}
     return {"message": "Assigned tasks", "tasks": assigned_tasks}
 
-def public_tasks(request: Request):
-    tasks = get_all_tasks(conn)
-    return {"message": "All tasks", "tasks": tasks}
-
 @protected_router.get("/submissions")
 def submissions(request: Request):
     return {"message": "Submissions endpoint"}
@@ -154,7 +170,7 @@ def submissions(request: Request):
 @protected_router.get("/tasks/{task_id}")
 def get_task(request: Request, task_id: int):
     return {"message": f"Get task with ID {task_id}"}
-    
-app = FastAPI()
+
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "SUPER_SECRET_KEY"))
+
 app.include_router(protected_router)

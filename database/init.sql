@@ -1,7 +1,7 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    token VARCHAR(255) NOT NULL,
+    Uname VARCHAR(255) NOT NULL,
+    Usurename VARCHAR(255) NOT NULL,
     user_type VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -51,7 +51,7 @@ CREATE TABLE tags (
 
 CREATE TABLE task_tags (
     id SERIAL PRIMARY KEY,
-    task_id INTEGER REFERENCES tasks(id), ON DELETE CASCADE,
-    tag_id INTEGER REFERENCES tags(id), ON DELETE CASCADE,
+    task_id INTEGER REFERENCES tasks(id) ON DELETE CASCADE,
+    tag_id INTEGER REFERENCES tags(id) ON DELETE CASCADE,
     UNIQUE(task_id, tag_id)
 );

@@ -36,9 +36,9 @@ def get_user_courses(consumer_key, consumer_secret,
 
     return current_courses
 
-def get_user_id(consumer_key, consumer_secret,
+def get_user(consumer_key, consumer_secret,
                 access_token, access_token_secret):
-    """Zwraca id użytkownika
+    """Zwraca dane użytkownika
 
     Args:
         consumer_key (_type_): klucz do api
@@ -47,7 +47,7 @@ def get_user_id(consumer_key, consumer_secret,
         access_token_secret (_type_): sekret dostępowy
 
     Returns:
-        json: id użytkownika
+        json: dane użytkownika
     """
 
     oauth = OAuth1Session(
@@ -58,10 +58,10 @@ def get_user_id(consumer_key, consumer_secret,
     )
 
     response = oauth.get(ENDPOINTS["user_id"], params={
-        "fields": "id",
+        "fields": "id|first_name|last_name|staff_status",
         "format": "json"
     })
     
     response.raise_for_status()
-
+    
     return response.json()
