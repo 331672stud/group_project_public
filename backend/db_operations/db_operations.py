@@ -82,3 +82,22 @@ def filter_by_tags(db, tags):
     cursor.close()
     return tasks
 
+def get_submissions(db, user_id):
+    cursor = db.cursor()
+    cursor.execute("SELECT s.id, s.task_id, t.title FROM submissions s JOIN tasks t ON s.task_id = t.id WHERE s.user_id = %s", (user_id,))
+    submissions = cursor.fetchall()
+    cursor.close()
+    return submissions
+
+def get_task(db, task_id, user_id):
+    cursor = db.cursor()
+    cursor.execute("SELECT id FROM submissions WHERE user_id = %s AND task_id = %s", (user_id, task_id,))
+    submission = cursor.fetchone()
+    if submission is None:
+        cursor.execute("SELECT id, title, description, code_template FROM tasks WHERE id = %s", (task_id,))
+    else :
+        cursor.execute("SELECT t.id, t.title, t.description, s.code FROM tasks t JOIN submissions s ON t.id = s.task_id WHERE t.id = %s AND s.user_id = %s", (task_id, user_id,))
+    task = cursor.fetchone()
+    cursor.close()
+    return task
+

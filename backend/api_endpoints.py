@@ -28,6 +28,8 @@ from db_operations.db_operations import (
     get_assigned_tasks,
     assign_task,
     get_user_data,
+    get_task,
+    get_submissions
 )
 
 CONSUMER_KEY = os.getenv("USOS_CONSUMER_KEY", "YOUR_KEY")
@@ -165,11 +167,18 @@ def tasks(request: Request):
 
 @protected_router.get("/submissions")
 def submissions(request: Request):
-    return {"message": "Submissions endpoint"}
+    submissions = get_submissions(conn, get_current_user(request))
+    return {"message": "Submissions endpoint: ", "submissions": submissions}
 
 @protected_router.get("/tasks/{task_id}")
 def get_task(request: Request, task_id: int):
-    return {"message": f"Get task with ID {task_id}"}
+    task = get_task(conn, task_id, get_current_user(request))
+    return {"message": f"Get task with ID {task_id}", "task": task}
+
+@protected_router.post("/tasks/{task_id}/submit")
+def submit_task(request: Request, task_id: int, solution: str):
+    submit_solution(conn, get_current_user(request), task_id, solution)
+    return {"message": f"Submitted solution for task {task_id}"}
 
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "SUPER_SECRET_KEY"))
 
