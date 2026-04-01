@@ -136,7 +136,8 @@ async def callback(
     request.session["user_id"] = user_data["id"]
     insert_user(conn, user_data["id"], user_data["first_name"], user_data["last_name"], user_data["staff_status"])
 
-    return {"login successful, user_id": user_data["id"]}
+    # return {"login successful, user_id": user_data["id"]}
+    return RedirectResponse(FRONTEND_URL)
 
 @app.get("/public-tasks")
 def public_tasks(request: Request):
