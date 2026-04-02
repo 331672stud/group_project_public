@@ -5,6 +5,7 @@ import os
 
 from fastapi import FastAPI, Request, Response, Depends, HTTPException, APIRouter
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from requests_oauthlib import OAuth1Session
 
@@ -34,6 +35,8 @@ from db_operations.db_operations import (
 
 CONSUMER_KEY = os.getenv("USOS_CONSUMER_KEY", "YOUR_KEY")
 CONSUMER_SECRET = os.getenv("USOS_CONSUMER_SECRET", "YOUR_SECRET")
+
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 
 for _ in range(30):  # retry for ~30 seconds
     try:
@@ -70,6 +73,18 @@ def get_current_user(request: Request):
     return user_id
 
 app = FastAPI()
+
+origins = [
+    FRONTEND_URL,
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # api endpoints
 @app.get("/login")
@@ -121,7 +136,8 @@ async def callback(
     request.session["user_id"] = user_data["id"]
     insert_user(conn, user_data["id"], user_data["first_name"], user_data["last_name"], user_data["staff_status"])
 
-    return {"login successful, user_id": user_data["id"]}
+    # return {"login successful, user_id": user_data["id"]}
+    return RedirectResponse(FRONTEND_URL)
 
 @app.get("/public-tasks")
 def public_tasks(request: Request):
