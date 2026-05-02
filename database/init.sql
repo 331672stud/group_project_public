@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     Uname VARCHAR(255) NOT NULL,
     Usurename VARCHAR(255) NOT NULL,
     user_type VARCHAR(50) NOT NULL,
@@ -16,17 +16,34 @@ CREATE TABLE courses (
 CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
+    difficulty varchar(10) CHECK (difficulty in ('easy', 'medium', 'hard')),
+    languages TEXT[],
     description TEXT NOT NULL,
-    code_template TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE task_files (
+    id SERIAL PRIMARY KEY,
+    task_id INTEGER REFERENCES tasks(id) ON DELETE CASCADE,
+    file_path VARCHAR(500) NOT NULL,   -- e.g. 'root/src/App.py'
+    language VARCHAR(50),
+    content TEXT NOT NULL
 );
 
 CREATE TABLE submissions (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
     task_id INTEGER REFERENCES tasks(id),
-    code TEXT NOT NULL,
+    content JSONB NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_task_status (
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    task_id INTEGER REFERENCES tasks(id) ON DELETE CASCADE,
+    status VARCHAR(20) DEFAULT 'new' CHECK (status IN ('new','inProgress','done')),
+    last_viewed TIMESTAMP,
+    PRIMARY KEY (user_id, task_id)
 );
 
 CREATE TABLE assigned_tasks (

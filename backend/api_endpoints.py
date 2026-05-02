@@ -24,13 +24,12 @@ from usos_api.usos_api_scraper import (
 from db_operations.db_operations import (
     insert_user,
     submit_solution,
-    add_task,
     get_all_tasks,
     get_assigned_tasks,
-    assign_task,
     get_user_data,
     get_task,
-    get_submissions
+    get_submissions,
+    get_course_tasks
 )
 
 CONSUMER_KEY = os.getenv("USOS_CONSUMER_KEY", "YOUR_KEY")
@@ -190,6 +189,69 @@ def submissions(request: Request):
 def get_task(request: Request, task_id: int):
     task = get_task(conn, task_id, get_current_user(request))
     return {"message": f"Get task with ID {task_id}", "task": task}
+
+@protected_router.get("/topics") #albo u nas tagi
+def get_topics(request: Request):
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name FROM tags ORDER BY name")
+    topics = [{"id": row[0], "name": row[1]} for row in cursor.fetchall()]
+    cursor.close()
+    return {"topics": topics}
+
+@protected_router.get("/topics{tag_id}/tasks")
+def get_tasks_by_topic(request: Request, tag_id: int):
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT t.id, t.title
+        FROM tasks t
+        JOIN task_tags tt ON t.id = tt.task_id
+        WHERE tt.tag_id = %s
+        ORDER BY t.title
+    """, (tag_id,))
+    tasks = [{"id": row[0], "title": row[1]} for row in cursor.fetchall()]
+    cursor.close()
+    return {"tasks": tasks}
+
+@protected_router.get("/tasks/{task_id}/submission")
+def get_my_submission(request: Request, task_id: int):
+    user_id = get_current_user(request)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT content FROM submissions
+        WHERE user_id = %s AND task_id = %s
+        ORDER BY created_at DESC LIMIT 1
+    """, (user_id, task_id))
+    row = cursor.fetchone()
+    cursor.close()
+    if not row:
+        return {"files": None}
+    return {"files": row[0]}  
+
+@protected_router.get("/courses/{course_id}/tasks")
+def course_tasks(request: Request, course_id: int):
+    user_id = get_current_user(request)
+    tasks = get_course_tasks(conn, course_id)  
+    if not tasks:
+        return {"message": "No tasks in this course", "tasks": []}
+    return {"message": f"Tasks for course {course_id}", "tasks": tasks}
+
+@protected_router.patch("/tasks/{task_id}/progress")
+def update_progress(request: Request, task_id: int):
+    user_id = get_current_user(request)
+    body = request.json()
+    status = body.get("status")
+    last_viewed = body.get("lastViewed")
+    # Upsert into user_task_status
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO user_task_status (user_id, task_id, status, last_viewed)
+        VALUES (%s, %s, %s, %s)
+        ON CONFLICT (user_id, task_id) DO UPDATE
+        SET status = EXCLUDED.status, last_viewed = EXCLUDED.last_viewed
+    """, (user_id, task_id, status, last_viewed))
+    conn.commit()
+    cursor.close()
+    return {"ok": True}
 
 @protected_router.post("/tasks/{task_id}/submit")
 def submit_task(request: Request, task_id: int, solution: str):
