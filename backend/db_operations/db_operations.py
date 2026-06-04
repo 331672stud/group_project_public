@@ -242,3 +242,49 @@ def get_submission_result(db, submission_id: int):
         "message": row[2],
         "checked_at": row[3].isoformat() if row[3] else None
     }
+    
+def create_task_with_files(db, title: str, difficulty: str, languages: list,
+                           description: str, files: list, tags: list = None) -> int:
+    """
+    Tworzy zadanie wraz z plikami startowymi i tagami.
+    files: lista słowników [{"path": ..., "language": ..., "content": ...}]
+    tags: lista nazw tagów (opcjonalnie)
+    Zwraca id nowego zadania.
+    """
+    cursor = db.cursor()
+    try:
+        # 1. Dodaj zadanie
+        cursor.execute(
+            "INSERT INTO tasks (title, difficulty, languages, description) VALUES (%s,%s,%s,%s) RETURNING id",
+            (title, difficulty, languages, description)
+        )
+        task_id = cursor.fetchone()[0]
+
+        # 2. Dodaj pliki
+        for f in files:
+            cursor.execute(
+                "INSERT INTO task_files (task_id, file_path, language, content) VALUES (%s,%s,%s,%s)",
+                (task_id, f["path"], f.get("language"), f["content"])
+            )
+
+        # 3. Dodaj tagi
+        if tags:
+            for tag_name in tags:
+                cursor.execute(
+                    "INSERT INTO tags (name) VALUES (%s) ON CONFLICT (name) DO NOTHING",
+                    (tag_name,)
+                )
+                cursor.execute("SELECT id FROM tags WHERE name = %s", (tag_name,))
+                tag_id = cursor.fetchone()[0]
+                cursor.execute(
+                    "INSERT INTO task_tags (task_id, tag_id) VALUES (%s,%s) ON CONFLICT DO NOTHING",
+                    (task_id, tag_id)
+                )
+
+        db.commit()
+        return task_id
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cursor.close()

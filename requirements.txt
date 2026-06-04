@@ -7,3 +7,4 @@ requests
 requests-oauthlib
 dotenv
 typing
+python-multipart
