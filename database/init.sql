@@ -38,6 +38,17 @@ CREATE TABLE submissions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE submission_results (
+    id SERIAL PRIMARY KEY,
+    submission_id INTEGER UNIQUE REFERENCES submissions(id) ON DELETE CASCADE,
+    status VARCHAR(20) NOT NULL DEFAULT 'queued' 
+        CHECK (status IN ('queued','processing','completed','error')),
+    score NUMERIC(5,2),               -- np. 0.00 - 100.00
+    message TEXT,
+    checked_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE user_task_status (
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     task_id INTEGER REFERENCES tasks(id) ON DELETE CASCADE,

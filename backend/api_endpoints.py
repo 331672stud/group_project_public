@@ -29,7 +29,13 @@ from db_operations.db_operations import (
     get_user_data,
     get_task,
     get_submissions,
-    get_course_tasks
+    get_course_tasks,
+    enqueue_solution_check,
+    get_submission_result
+)
+
+from verification import (
+    check_submission
 )
 
 CONSUMER_KEY = os.getenv("USOS_CONSUMER_KEY", "YOUR_KEY")
@@ -254,9 +260,20 @@ def update_progress(request: Request, task_id: int):
     return {"ok": True}
 
 @protected_router.post("/tasks/{task_id}/submit")
-def submit_task(request: Request, task_id: int, solution: str):
-    submit_solution(conn, get_current_user(request), task_id, solution)
-    return {"message": f"Submitted solution for task {task_id}"}
+def submit_task(request: Request, task_id: int, files: list):
+    submission_id = submit_solution(conn, get_current_user(request), task_id, files)
+    enqueue_solution_check(conn, submission_id)
+    check_submission(conn, submission_id)
+    return {"message": f"Submitted solution for task {task_id}", "submission_id": submission_id}
+
+@protected_router.get("/submissions/{submission_id}/result")
+def get_submission_result_endpoint(request: Request, submission_id: int):
+    result = get_submission_result(conn, submission_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    return result
+
+
 
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "SUPER_SECRET_KEY"))
 

@@ -21,7 +21,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app  
+      - ./backend:/app
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/postgres
     depends_on:
@@ -35,7 +35,20 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=postgres
     volumes:
-     - ./database:/docker-entrypoint-initdb.d
+      - ./database:/docker-entrypoint-initdb.d
+  frontend:
+    build:
+      context: ./frontend
+    container_name: project_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # zapobiega nadpisywaniu modułów
+    environment:
+      - VITE_API_URL=http://localhost:8000 # adres używany przez przeglądarkę
+    depends_on:
+      - web
 
 volumes:
   code_server_config:

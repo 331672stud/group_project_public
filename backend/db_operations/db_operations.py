@@ -48,11 +48,11 @@ def submit_solution(db, user_id, task_id, files):
         cursor.execute(
             """
             INSERT INTO submissions (user_id, task_id, content)
-            VALUES (%s, %s, %s::jsonb)
+            VALUES (%s, %s, %s::jsonb) RETURNING id
             """,
             (user_id, task_id, content_json)
         )
-
+        submission_id = cursor.fetchone()[0]
         # Upsert progress to 'done'
         cursor.execute(
             """
@@ -65,6 +65,7 @@ def submit_solution(db, user_id, task_id, files):
         )
 
         db.commit()
+        return submission_id
     finally:
         cursor.close()
 
@@ -212,3 +213,32 @@ def get_task(db, task_id, user_id):
     finally:
         cursor.close()
 
+def enqueue_solution_check(db, submission_id: int):
+    """Tworzy wpis w submission_results ze statusem 'queued'."""
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            "INSERT INTO submission_results (submission_id, status) VALUES (%s, 'queued')",
+            (submission_id,)
+        )
+        db.commit()
+    finally:
+        cursor.close()
+
+def get_submission_result(db, submission_id: int):
+    """Zwraca wynik sprawdzania dla danego zgłoszenia."""
+    cursor = db.cursor()
+    cursor.execute(
+        "SELECT status, score, message, checked_at FROM submission_results WHERE submission_id = %s",
+        (submission_id,)
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    if not row:
+        return None
+    return {
+        "status": row[0],
+        "score": float(row[1]) if row[1] else None,
+        "message": row[2],
+        "checked_at": row[3].isoformat() if row[3] else None
+    }
