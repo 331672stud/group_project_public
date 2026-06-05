@@ -39,7 +39,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.front
+      dockerfile: Dockerfile
     container_name: project_frontend
     ports:
       - "5173:5173"
