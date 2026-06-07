@@ -69,12 +69,6 @@ def submit_solution(db, user_id, task_id, files):
     finally:
         cursor.close()
 
-def add_task(db, title, description, code_template):
-    cursor = db.cursor()
-    cursor.execute("INSERT INTO tasks (title, description, code_template) VALUES (%s, %s, %s)", (title, description, code_template,))
-    db.commit()
-    cursor.close()
-
 def get_all_tasks(db):
     cursor = db.cursor()
     cursor.execute("SELECT id, title FROM tasks")
