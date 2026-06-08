@@ -42,8 +42,10 @@ Komunikacja między kontenerami odbywa się w wewnętrznej sieci Dockera. Backen
 ### Zadania
 
 - Publiczna lista wszystkich zadań (`/public-tasks`).
-- Zadania przypisane studentowi (`/tasks`).
+- Zadania przypisane studentowi (`/assigned_tasks`).
+- lista wszystkich zadań (`/tasks`).
 - Szczegóły zadania (opis, trudność, języki, tagi, drzewo plików startowych, ostatnie rozwiązanie) – `/tasks/{task_id}`.
+- konkretnie oryginalne pliki zadania (`/tasks/{task_id}/files`).
 - **Wewnętrzne CRUD dla zadań** (funkcje `create_task_with_files`, `update_task`, `delete_task`) – tworzenie/edycja/usuwanie zadań możliwe przez skrypt wewnętrzny (np. `scripts/add_task.py`), niedostępne z zewnątrz.
 - System tagów (tematów) – `/topics`, filtrowanie zadań po tagach.
 

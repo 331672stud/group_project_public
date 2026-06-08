@@ -206,6 +206,27 @@ def get_task(db, task_id, user_id):
 
     finally:
         cursor.close()
+        
+def get_task_files(db, task_id):
+    """Return list of {path, language, content} for a task."""
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            """
+            SELECT file_path, language, content
+            FROM task_files
+            WHERE task_id = %s
+            ORDER BY file_path
+            """,
+            (task_id,)
+        )
+        rows = cursor.fetchall()
+        return [
+            {"path": row[0], "language": row[1], "content": row[2]}
+            for row in rows
+        ]
+    finally:
+        cursor.close()
 
 def enqueue_solution_check(db, submission_id: int):
     """Tworzy wpis w submission_results ze statusem 'queued'."""
@@ -280,5 +301,56 @@ def create_task_with_files(db, title: str, difficulty: str, languages: list,
     except Exception:
         db.rollback()
         raise
+    finally:
+        cursor.close()
+        
+def get_tasks_for_user(db, user_id):
+    """
+    Zwraca listę zadań ze statusem i tagami.
+    zadanie:
+        topic, num, difficulty, status, lastViewed, languages, description
+    """
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            """
+            SELECT
+                t.id,
+                t.difficulty,
+                t.languages,
+                t.description,
+                COALESCE(uts.status, 'new') AS status,
+                uts.last_viewed AS last_viewed,
+                COALESCE(
+                    array_agg(tg.name ORDER BY tg.name)
+                    FILTER (WHERE tg.name IS NOT NULL),
+                    ARRAY[]::text[]
+                ) AS tags
+            FROM tasks t
+            LEFT JOIN user_task_status uts
+                ON uts.task_id = t.id AND uts.user_id = %s
+            LEFT JOIN task_tags tt ON tt.task_id = t.id
+            LEFT JOIN tags tg ON tg.id = tt.tag_id
+            GROUP BY t.id, uts.status, uts.last_viewed
+            ORDER BY t.id
+            """,
+            (user_id,)
+        )
+        rows = cursor.fetchall()
+
+        tasks = []
+        for row in rows:
+            task_id, difficulty, languages, description, status, last_viewed, tags = row
+            tasks.append({
+                "topic": tags,   # tagi jako topic
+                "num": task_id,   #to jest id ale frontend nie chce id                   
+                "difficulty": difficulty,
+                "status": status,
+                "lastViewed": last_viewed.isoformat() if last_viewed else None,
+                "languages": languages,             
+                "description": description
+            })
+
+        return tasks
     finally:
         cursor.close()

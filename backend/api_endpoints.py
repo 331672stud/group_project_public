@@ -31,7 +31,9 @@ from db_operations.db_operations import (
     get_submissions,
     get_course_tasks,
     enqueue_solution_check,
-    get_submission_result
+    get_submission_result,
+    get_tasks_for_user,
+    get_task_files
 )
 
 from verification import (
@@ -179,12 +181,18 @@ def profile(request: Request):
     user_data = get_user_data(conn, get_current_user(request))
     return {"message": "Profile endpoint", "user_id": get_current_user(request), "first name": user_data[1], "last name": user_data[2], "user_type": user_data[3]}
 
-@protected_router.get("/tasks")
+@protected_router.get("/assigned_tasks")
 def tasks(request: Request):
     assigned_tasks = get_assigned_tasks(conn, get_current_user(request))
     if(not assigned_tasks):
         return {"message": "No assigned tasks"}
     return {"message": "Assigned tasks", "tasks": assigned_tasks}
+
+@protected_router.get("/tasks")
+def list_tasks(request: Request):
+    user = get_current_user(request)
+    tasks_data = get_tasks_for_user(conn, user.id)
+    return {"tasks": tasks_data}
 
 @protected_router.get("/submissions")
 def submissions(request: Request):
@@ -196,6 +204,13 @@ def get_task(request: Request, task_id: int):
     task = get_task(conn, task_id, get_current_user(request))
     return {"message": f"Get task with ID {task_id}", "task": task}
 
+@protected_router.get("/tasks/{task_id}/files")
+def task_files(request: Request, task_id: int):
+    files = get_task_files(conn, task_id)
+    if not files:
+        raise HTTPException(status_code=404, detail="Task not found or no files")
+    return {"task_id": task_id, "files": files}
+
 @protected_router.get("/topics") #albo u nas tagi
 def get_topics(request: Request):
     cursor = conn.cursor()
@@ -204,7 +219,7 @@ def get_topics(request: Request):
     cursor.close()
     return {"topics": topics}
 
-@protected_router.get("/topics{tag_id}/tasks")
+@protected_router.get("/topics/{tag_id}/tasks")
 def get_tasks_by_topic(request: Request, tag_id: int):
     cursor = conn.cursor()
     cursor.execute("""
