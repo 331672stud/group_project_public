@@ -1,0 +1,9 @@
+.grid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    width: 0;
+}
+
+.grid > div {
+    margin: 10px;
+}

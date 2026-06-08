@@ -1,0 +1,41 @@
+
+.label {
+    font-family: var(--main-font), sans-serif;
+    color: var(--stroke-color);
+}
+
+    .label.mini {
+        font-size: var(--font-mini);
+        line-height: var(--font-mini);
+    }
+
+    .label.small {
+        font-size: var(--font-small);
+        line-height: var(--font-small);
+    }
+
+    .label.medium {
+        font-size: var(--font-medium);
+        line-height: var(--font-medium);
+    }
+
+    .label.large {
+        font-size: var(--font-large);
+        line-height: var(--font-large);
+    }
+
+    .label.bold {
+        font-weight: bold;
+    }
+
+    .label.stroke {
+        color: var(--stroke-color);
+    }
+
+    .label.strokeGray {
+        color: var(--stroke-gray-color)
+    }
+
+p {
+    margin: 0;
+}

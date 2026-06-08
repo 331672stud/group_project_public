@@ -1,0 +1,118 @@
+:root {
+    --bar-height: 10px;
+}
+
+.header {
+    background-color: var(--common-color);
+    height: 25%;
+    position: relative;
+    /*z-index: -1;*/
+    border-radius: 17px 17px 0 0;
+    box-shadow: -4px 4px 4px -2px rgb(0,0,0,0.25) inset;
+}
+
+.body {
+    background-color: var(--strong-color);
+    height: 75%;
+    display: flex;
+    /*z-index: -1;*/
+    overflow: hidden;
+    box-shadow: -4px 0 4px -2px rgb(0,0,0,0.25) inset;
+    border-radius: 0 0 17px 17px;
+}
+
+.component {
+    width: 330px;
+    height: 200px;
+    /*box-shadow: -4px 4px 4px rgb(0,0,0,0.25) inset;*/
+    border-radius: 17px;
+    overflow: hidden;
+    border-style: solid;
+    border-color: rgb(0,0,0,0);
+}
+
+.iconsContainer {
+    height: 100%;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+
+
+.button {
+    border-width: 4px;
+    border-radius: 8px;
+    padding: 2%;
+    height: auto;
+    width: 50%;
+}
+
+
+.progressBarContainer {
+    float: left;
+    width: 70%;
+    height: 100%;
+}
+
+.progressBar {
+    display: flex;
+    flex-direction: column;
+    height: 21%;
+    width: 100%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.barBackground {
+    height: var(--bar-height);
+    width: 76%;
+    background-color: var(--stroke-color);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-right: 1%;
+}
+
+.barProgres {
+    height: 100%;
+    border-radius: 200px;
+    position: relative;
+    overflow: hidden;
+}
+    .barProgres.easy {
+        background-color: var(--easy-color);
+    }
+    .barProgres.hard {
+        background-color: var(--hard-color);
+    }
+    .barProgres.medium {
+        background-color: var(--medium-color);
+    }
+    .barProgres.theory {
+        background-color: var(--theory-color);
+    }
+
+.barTitle {
+    position: relative;
+    width: 100%;
+    float: left;
+}
+
+.barNum {
+    width: 23%;
+}
+
+.barPlusNumGroup {
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    position:relative;
+    top: 50%;
+    transform: translate(0, -50%);
+    text-align: center;
+}

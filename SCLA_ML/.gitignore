@@ -1,0 +1,11 @@
+model/SCLA_ML_model.gguf
+training model/SCLA_ML/*
+training model/existing_file_method/checkpoints/
+training model/existing_file_method/data/
+training model/existing_file_method/llama.cpp/
+training model/existing_file_method/lora_adapters/
+training model/existing_file_method/lora_adapters copy/
+training model/existing_file_method/merged_model/
+training model/existing_file_method/unsloth_compiled_cache/
+training model/existing_file_method/vuln_detector/
+training model/existing_file_method/vuln_detector_gguf/

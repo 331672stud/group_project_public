@@ -1,0 +1,82 @@
+.exercise {
+    --size: 71px;
+    position: relative;
+    height: var(--size);
+    width: var(--size);
+    background-color: rgb(0,0,0,0);
+    padding: 0;
+    border-style: hidden;
+}
+
+.background {
+    --shadow-pos: calc(var(--size) * 0.05);
+    position: relative;
+    height: 100%;
+    width: 100%;
+    border-radius: 14%;
+    background-color: var(--strong-color);
+    box-shadow: calc(var(--shadow-pos) * -1) var(--shadow-pos) var(--shadow-pos) rgb(0,0,0,0.25) inset;
+}
+
+.exercise:hover > .background {
+    box-shadow: calc(var(--shadow-pos) * -1) var(--shadow-pos) var(--shadow-pos) rgb(0,0,0,0.25);
+
+}
+
+.exercise:active > .icon {
+    color: var(--strong-color);
+}
+
+.exercise:active > .background {
+    background-color: var(--common-color);
+}
+
+.exercise.active > .background {
+    background-color: var(--common-color);
+}
+
+.exercise.active > .icon {
+    color: var(--strong-color);
+}
+
+.difficultyMarker {
+    height: 13%;
+    width: 13%;
+    border-radius: 50%;
+    position: absolute;
+    top: 13%;
+    left: 13%;
+}
+
+    .difficultyMarker.easy {
+        background-color: var(--easy-color);
+    }
+
+    .difficultyMarker.medium {
+        background-color: var(--medium-color);
+    }
+
+    .difficultyMarker.hard {
+        background-color: var(--hard-color);
+    }
+
+.label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.icon {
+    color: var(--common-color);
+    position: absolute;
+    bottom: 10%;
+    right: 10%;
+    height: auto;
+    width: 30%
+}
+
+
+
+
+

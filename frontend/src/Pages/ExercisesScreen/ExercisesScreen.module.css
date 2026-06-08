@@ -1,0 +1,120 @@
+.pageWrapper {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+}
+
+.exerciseSections {
+    height: 100vh;
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.exerciseSection {
+    padding-top: 1%;
+    padding-bottom: 1%;
+    width: 60%;
+    border-style: dashed hidden hidden;
+    border-color: var(--stroke-gray-color);
+    border-width: 1px;
+}
+
+.exerciseSection > button {
+    display: inline-block;
+    margin: 1%;
+}
+
+.sectionLabel {
+    color: var(--stroke-gray-color);
+    width: 60%;
+    margin-left: 10px;
+}
+
+.exerciseInfoSection {
+    height: 100%;
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.exerciseInfoBackground {
+    width: 60%;
+    height: 70%;
+    background-color: var(--common-color);
+    border-radius: 17px;
+    box-shadow: -4px 4px 4px 0 rgb(0,0,0,0.25) inset;
+    overflow: auto;
+    scrollbar-color: var(--dark-color) rgba(255, 0, 0, 0);
+    display: flex;
+    flex-direction: column;
+}
+
+.tableKey {
+    width: 35%;
+    padding: 2%;
+    vertical-align: top;
+}
+
+.tableValue {
+    margin-top: 0;
+    padding: 2%;
+    vertical-align: top;
+}
+
+.tableRow {
+    border: 50px solid;
+}
+
+.table {
+    margin: 5%;
+}
+
+.button {
+    border-style: hidden;
+    height: 30px;
+    width: 120px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+.button.continue, .button.start {
+    background-color: var(--easy-color);
+}
+
+.button.restart {
+    background-color: var(--medium-color);
+}
+
+.button.view {
+    background-color: var(--gray-color);
+}
+
+.button.continue:hover, .button.start:hover {
+    background-color: var(--easy-color-hover);
+}
+
+.button.restart:hover {
+    background-color: var(--medium-color-hover);
+}
+
+.button.view:hover {
+    background-color: var(--gray-color-hover);
+}
+
+.icon {
+    color: var(--stroke-color);
+    vertical-align: center;
+    height: 60%;
+}
+
+.buttons {
+    margin-left: 7px;
+    margin-top: auto;
+}
