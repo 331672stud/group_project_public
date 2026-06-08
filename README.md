@@ -14,11 +14,12 @@ Projekt uruchamiany jest za pomocą `docker compose` i składa się z trzech ser
 
 Komunikacja między kontenerami odbywa się w wewnętrznej sieci Dockera. Backend łączy się z bazą przez URL `postgresql://postgres:password@db:5432/postgres`.
 
-## Wymagania wstępne
+## skrypty testowe
 
-- [Docker](https://docs.docker.com/get-docker/) oraz [Docker Compose](https://docs.docker.com/compose/install/).
-- Plik `.env` w głównym katalogu projektu (szczegóły poniżej).
-- **FOLDER `frontend/` Z PLIKIEM `Dockerfile`** – docker compose oczekuje, że cały frontend znajduje się w katalogu `frontend/` (na tym samym poziomie co `backend/` i `database/`).
+add_task.py - po prostu dodaje proste zadanie z plikami.
+check_db_contents.py - prosty dump co jest w bazie aby sprawdzić co się dodało.
+add_task_submission_user.py - trochę bardziej skomplikowane dodawanie zadania z konkretnym zapisem.
+populate_test_data.py - masowy skrypt wyżej, dodaje kilka wartości dla lepszego testu.
 
 ## Zaimplementowane funkcjonalności
 
@@ -120,7 +121,7 @@ Wszystkie ścieżki podano względem adresu backendu.
 | GET | `/tasks/{task_id}/submission` | Ostatnie zgłoszenie dla danego zadania |
 | PATCH | `/tasks/{task_id}/progress` | Aktualizacja statusu zadania (`new`, `inProgress`, `done`) i czasu ostatniego wyświetlenia |
 
-### Wyniki sprawdzania (stub)
+### Wyniki sprawdzania
 
 | Metoda | Ścieżka | Opis |
 |--------|---------|------|
