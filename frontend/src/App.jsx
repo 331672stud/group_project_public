@@ -18,7 +18,6 @@ const router = createBrowserRouter([
             {
                 Component: ProtectedLayout,
                 children: [
-                    {path: "/code", Component: CodingScreen},
                     {path: "/menu", Component: TopicsScreen},
                     {path: "/ex", Component: ExercisesScreen},
                     {path: "/menu/:topic/:id", Component: CodingScreen},

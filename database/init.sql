@@ -15,6 +15,7 @@ CREATE TABLE courses (
 
 CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
+    num INTEGER NOT NULL,
     title VARCHAR(255) NOT NULL,
     difficulty varchar(10) CHECK (difficulty in ('easy', 'medium', 'hard')),
     languages TEXT[],

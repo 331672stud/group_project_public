@@ -35,7 +35,7 @@ function TopBar({topic, small}) {
             </div>
             {topic != null ? (<div className={styles.underBar}>
                 <IconLink Icon={Undo2} link={small ? `/menu/${topic}` : '/menu'} className={styles.icon}/>
-                <Label text={textConvert(topic)} size={'medium'} weight={'bold'}/>
+                <Label text={topic} size={'medium'} weight={'bold'}/>
                 <IconLink Icon={BookOpenText} link={small ? `/menu/${topic}` : '/menu'} className={styles.icon}/>
             </div>) : (<></>)}
         </div>

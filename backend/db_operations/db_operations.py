@@ -206,6 +206,49 @@ def get_task(db, task_id, user_id):
 
     finally:
         cursor.close()
+
+def get_task_by_topic_and_num_db(db, topic, num, user_id):
+    """Zwraca zadanie o danym topicu (tagu) i num, wraz z informacją o statusie dla user_id."""
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            """
+            SELECT
+                t.id, t.title, t.description, t.difficulty, t.languages,
+                COALESCE(uts.status, 'new') AS status,
+                uts.last_viewed AS last_viewed,
+                COALESCE(
+                    array_agg(tg.name ORDER BY tg.name)
+                    FILTER (WHERE tg.name IS NOT NULL),
+                    ARRAY[]::text[]
+                ) AS tags
+            FROM tasks t
+            JOIN task_tags tt ON t.id = tt.task_id
+            JOIN tags tg ON tt.tag_id = tg.id
+            LEFT JOIN user_task_status uts ON uts.task_id = t.id AND uts.user_id = %s
+            WHERE t.title = %s AND t.num = %s
+            GROUP BY t.id, uts.status, uts.last_viewed
+            """,
+            (user_id, topic, num)
+        )
+        row = cursor.fetchone()
+        if not row:
+            return None
+
+        task = {
+            "id": row[0],
+            "title": row[1],
+            "description": row[2],
+            "difficulty": row[3],
+            "languages": row[4],
+            "status": row[5],
+            "lastViewed": row[6].isoformat() if row[6] else None,
+            "tags": row[7]
+        }
+        return task
+
+    finally:
+        cursor.close()
         
 def get_task_files(db, task_id):
     """Return list of {path, language, content} for a task."""
@@ -259,7 +302,7 @@ def get_submission_result(db, submission_id: int):
     }
     
 def create_task_with_files(db, title: str, difficulty: str, languages: list,
-                           description: str, files: list, tags: list = None) -> int:
+                           description: str, files: list, num: int, tags: list = None) -> int:
     """
     Tworzy zadanie wraz z plikami startowymi i tagami.
     files: lista słowników [{"path": ..., "language": ..., "content": ...}]
@@ -270,8 +313,8 @@ def create_task_with_files(db, title: str, difficulty: str, languages: list,
     try:
         # 1. Dodaj zadanie
         cursor.execute(
-            "INSERT INTO tasks (title, difficulty, languages, description) VALUES (%s,%s,%s,%s) RETURNING id",
-            (title, difficulty, languages, description)
+            "INSERT INTO tasks (title, num, difficulty, languages, description) VALUES (%s, %s, %s,%s,%s) RETURNING id",
+            (title, num, difficulty, languages, description)
         )
         task_id = cursor.fetchone()[0]
 
@@ -315,7 +358,9 @@ def get_tasks_for_user(db, user_id):
         cursor.execute(
             """
             SELECT
+                t.title,
                 t.id,
+                t.num,
                 t.difficulty,
                 t.languages,
                 t.description,
@@ -340,10 +385,11 @@ def get_tasks_for_user(db, user_id):
 
         tasks = []
         for row in rows:
-            task_id, difficulty, languages, description, status, last_viewed, tags = row
+            topic, task_id, num, difficulty, languages, description, status, last_viewed, tags = row
             tasks.append({
-                "topic": tags,   # tagi jako topic
-                "num": task_id,   #to jest id ale frontend nie chce id                   
+                "topic": topic,   # tagi jako topic,
+                "tags": tags,
+                "num": num,              
                 "difficulty": difficulty,
                 "status": status,
                 "lastViewed": last_viewed.isoformat() if last_viewed else None,

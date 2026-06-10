@@ -22,6 +22,8 @@ export function CodingScreen() {
     const [buttonsPos, setButtonsPos] = useState({[panel.tree]: bar.left, [panel.instruction]: bar.right})
     const [panelPos, setPanelPos] = useState({[bar.left]: panel.tree, [bar.right]: panel.instruction});
 
+    
+
     function focusItem(item) {
         if (item.isFolder) {
             return

@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import ExerciseIcon from "../../Components/ExerciseIcon/ExerciseIcon.jsx";
 import {exercises} from "../../Utility/fakeAPI/Exercises.js";
 import styles from './ExercisesScreen.module.css'
@@ -12,6 +12,13 @@ import {Icon} from "../../Components/Icon/Icon.jsx";
 
 function ExercisesScreen() {
     const [activeExercise, updateActivateExercise] = useState(null)
+    const [exerciseList, updateExerciseList] = useState(null)
+
+    useEffect(() => {
+        const e = fetch(`${import.meta.env.VITE_BACKEND_URL}tasks`, {credentials: 'include'}).then(res => res.json()).then(data => {
+            updateExerciseList(data['tasks'])
+        })
+    }, []);
 
     const onUpdateActiveExercise = (e) => {
         updateActivateExercise(e)
@@ -22,26 +29,45 @@ function ExercisesScreen() {
         <div className={styles.pageWrapper}>
             <div className={styles.exerciseSections}>
                 {['easy', 'medium', 'hard'].map(diff => (
-                    <Section difficulty={diff} activeExerciseState={ {activeExercise, onUpdateActiveExercise} }/>))}
+                    <Section key={diff} difficulty={diff} activeExerciseState={ {activeExercise, onUpdateActiveExercise} } exerciseList={exerciseList} />
+                ))}
             </div>
             <ExerciseInfo exercise={activeExercise}/>
         </div>
     </>)
 }
 
-function Section({difficulty, activeExerciseState}) {
-    const {topic} = useParams()
-    return <>
-        <Label className={styles.sectionLabel} text={difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
-               size={"small"}/>
-        <div className={styles.exerciseSection}>
-            {exercises
-                .filter((e) => e.difficulty === difficulty && e.topic === topic)
-                .sort((a,b) => a.num-b.num)
-                .map(e => (
-                <ExerciseIcon exercise={e} activeExerciseState={activeExerciseState}/>))}
-        </div>
-    </>
+function Section({ difficulty, activeExerciseState, exerciseList }) {
+    const { topic } = useParams();
+
+    return (
+        <>
+            <Label
+                className={styles.sectionLabel}
+                text={difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+                size={"small"}
+            />
+
+            {exerciseList?.length > 0 && (
+                <div className={styles.exerciseSection}>
+                    {exerciseList
+                        .filter(
+                            (e) =>
+                                e.difficulty === difficulty &&
+                                e.topic === topic
+                        )
+                        .sort((a, b) => a.num - b.num)
+                        .map((e) => (
+                            <ExerciseIcon
+                                key={e.num}
+                                exercise={e}
+                                activeExerciseState={activeExerciseState}
+                            />
+                        ))}
+                </div>
+            )}
+        </>
+    );
 }
 
 function ExerciseInfo({exercise}) {
@@ -53,9 +79,9 @@ function ExerciseInfo({exercise}) {
                         <tbody>
                         {Object.entries(exercise).map(([key, value]) => {
                             key = textConvert(key) + ':'
-                            value = textConvert(value)
+                            value = value
                             return (
-                                <tr className={styles.tableRow}>
+                                <tr key={key} className={styles.tableRow}>
                                     <td className={styles.tableKey}><Label text={key} size={'small'}/></td>
                                     <td className={styles.tableValue}><Label text={value} size={'small'}/></td>
                                 </tr>)

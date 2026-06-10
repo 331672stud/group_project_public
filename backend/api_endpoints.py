@@ -27,13 +27,14 @@ from db_operations.db_operations import (
     get_all_tasks,
     get_assigned_tasks,
     get_user_data,
-    get_task,
+    get_task as get_task_db,
     get_submissions,
     get_course_tasks,
     enqueue_solution_check,
     get_submission_result,
     get_tasks_for_user,
-    get_task_files
+    get_task_files,
+    get_task_by_topic_and_num_db
 )
 
 from verification import (
@@ -75,6 +76,7 @@ def get_current_user(request: Request):
         int: id użytkownika
     """
     user_id = request.session.get("user_id")
+    print(f"Current user ID: {user_id}")  # Debug print
     if not user_id:
         raise HTTPException(status_code=401, detail="Nie zalogowany")
     return user_id
@@ -92,6 +94,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # api endpoints
 @app.get("/login")
@@ -191,7 +194,7 @@ def tasks(request: Request):
 @protected_router.get("/tasks")
 def list_tasks(request: Request):
     user = get_current_user(request)
-    tasks_data = get_tasks_for_user(conn, user.id)
+    tasks_data = get_tasks_for_user(conn, user)
     return {"tasks": tasks_data}
 
 @protected_router.get("/submissions")
@@ -201,7 +204,7 @@ def submissions(request: Request):
 
 @protected_router.get("/tasks/{task_id}")
 def get_task(request: Request, task_id: int):
-    task = get_task(conn, task_id, get_current_user(request))
+    task = get_task_db(conn, task_id, get_current_user(request))
     return {"message": f"Get task with ID {task_id}", "task": task}
 
 @protected_router.get("/tasks/{task_id}/files")
@@ -247,6 +250,12 @@ def get_my_submission(request: Request, task_id: int):
     if not row:
         return {"files": None}
     return {"files": row[0]}  
+
+@protected_router.get("/tasks/{topic}/{num}")
+def get_task_by_topic_and_num(request: Request, topic: str, num: int):
+    task = get_task_by_topic_and_num_db(conn, topic, num, get_current_user(request))
+    return {"message": f"Get task with topic '{topic}' and number {num}", "task": task}
+
 
 @protected_router.get("/courses/{course_id}/tasks")
 def course_tasks(request: Request, course_id: int):
