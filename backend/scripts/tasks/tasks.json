@@ -3,13 +3,31 @@
     "topic": "SQL Injection",
     "num": 1,
     "difficulty": "easy",
-    "languages": ["python"],
+    "languages": [
+      "python"
+    ],
     "description": "Poniższy kod realizuje logowanie użytkownika w aplikacji Python. Wskaż konkretną linijkę, w której występuje podatność SQL Injection. Następnie wyjaśnij, co się stanie, gdy atakujący poda jako login wartość ' OR '1'='1'.",
     "files": [
       {
         "path": "root/script.py",
         "language": "python",
         "content": "import sqlite3\n\ndef login(username, password):\n    conn = sqlite3.connect('app.db')\n    cur = conn.cursor()\n    query = \"SELECT id FROM users WHERE username='\" + username + \"' AND password='\" + password + \"'\"\n    cur.execute(query)\n    return cur.fetchone() is not None"
+      }
+    ]
+  },
+  {
+    "topic": "SQL Injection",
+    "num": 2,
+    "difficulty": "medium",
+    "languages": [
+      "python"
+    ],
+    "description": "Poniższy kod jest podatny na SQL Injection. Popraw go, stosując parametryzację zapytań z modułem sqlite3. ",
+    "files": [
+      {
+        "path": "root/script.py",
+        "language": "python",
+        "content": "import sqlite3\n\ndef search_users(role):\n    conn = sqlite3.connect('app.db')\n    cur  = conn.cursor()\n    query = \"SELECT name, email FROM users \" \"WHERE role = '\" + role + \"'\"\n    cur.execute(query)\n    return cur.fetchall()"
       }
     ]
   }
