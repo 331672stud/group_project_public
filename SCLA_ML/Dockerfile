@@ -18,4 +18,4 @@ RUN if [ -f app/requirements.txt ]; then pip install --no-cache-dir -r app/requi
 
 EXPOSE 11434
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
