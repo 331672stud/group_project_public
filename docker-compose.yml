@@ -95,4 +95,3 @@ volumes:
   code_server_config:
   postgres_data:
   ollama_data:
-  frontend_build:
