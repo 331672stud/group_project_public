@@ -123,10 +123,13 @@
     left: -5px;
 }
 
-
 .instructions {
     height: 100%;
     background-color: var(--vs-background);
     color: var(--stroke-color);
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
 }

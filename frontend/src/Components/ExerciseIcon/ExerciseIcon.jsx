@@ -9,7 +9,7 @@ function ExerciseIcon({exercise, activeExerciseState: {onUpdateActiveExercise, a
     return (
         <>
             <button onClick={ () => onUpdateActiveExercise(exercise)}
-                    onDoubleClick={() => navigate(`/menu/${exercise.topic}/${exercise.num}`)}
+                    onDoubleClick={() => navigate(`/menu/${exercise.topic}/${exercise.num}?mode=start`)}
                     className={`${styles.exercise} ${activeExercise === exercise ? styles.active : ''}` }>
                 <div className={styles.background}/>
                 <div className={`${styles.difficultyMarker} ${styles[exercise.difficulty]}`}></div>

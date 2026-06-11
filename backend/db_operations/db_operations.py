@@ -234,6 +234,7 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
         row = cursor.fetchone()
         if not row:
             return None
+            
 
         task = {
             "id": row[0],
@@ -245,6 +246,36 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
             "lastViewed": row[6].isoformat() if row[6] else None,
             "tags": row[7]
         }
+
+        # Task files (folder tree)
+        cursor.execute(
+            """
+            SELECT file_path, language, content
+            FROM task_files
+            WHERE task_id = %s
+            ORDER BY file_path
+            """,
+            (task['id'],)
+        )
+        task["files"] = [
+            {"path": r[0], "language": r[1], "content": r[2]}
+            for r in cursor.fetchall()
+        ]
+
+        # User's latest submission (if any)
+        cursor.execute(
+            """
+            SELECT content
+            FROM submissions
+            WHERE user_id = %s AND task_id = %s
+            ORDER BY created_at DESC
+            LIMIT 1
+            """,
+            (user_id, task['id'])
+        )
+        sub = cursor.fetchone()
+        task["submission"] = sub[0] if sub else None   # JSONB, deserialised automatically
+
         return task
 
     finally:

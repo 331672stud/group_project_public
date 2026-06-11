@@ -9,6 +9,7 @@ import {textConvert} from "../../Utility/textConvert.js";
 import {useNavigate} from "react-router-dom"
 import TopBar from "../../Components/TopBar/TopBar.jsx";
 import {Icon} from "../../Components/Icon/Icon.jsx";
+import {Button} from "../../Components/Button/Button.jsx";
 
 function ExercisesScreen() {
     const [activeExercise, updateActivateExercise] = useState(null)
@@ -71,6 +72,7 @@ function Section({ difficulty, activeExerciseState, exerciseList }) {
 }
 
 function ExerciseInfo({exercise}) {
+    const link = `/menu/${exercise?.topic}/${exercise?.num}`
     return <>
         <div className={styles.exerciseInfoSection}>
             <div className={styles.exerciseInfoBackground}>
@@ -91,16 +93,16 @@ function ExerciseInfo({exercise}) {
                     <div className={styles.buttons}>
                         {
                             exercise.status === 'new' ? (
-                                <Button status={'start'} exercise={exercise}/>
+                                <Button status={'start'} link={link + '?mode=start'}/>
                             ) : exercise.status === 'inProgress' ? (
                                 <>
-                                    <Button status={'continue'} exercise={exercise}/>
-                                    <Button status={'restart'} exercise={exercise}/>
+                                    <Button status={'continue'} link={link + '?mode=start'}/>
+                                    <Button status={'restart'} link={link + '?mode=start'}/>
                                 </>
                             ) : exercise.status === 'done' ? (
                                 <>
-                                    <Button status={'view'} exercise={exercise}/>
-                                    <Button status={'restart'} exercise={exercise}/>
+                                    <Button status={'view'} link={link + '?mode=view'}/>
+                                    <Button status={'restart'} link={link + '?mode=start'}/>
                                 </>
                             ) : (
                                 <>
@@ -109,23 +111,9 @@ function ExerciseInfo({exercise}) {
                         }
                     </div>
                 </>)}
-
             </div>
         </div>
     </>
-}
-
-function Button({status, exercise}) {
-    const navigate = useNavigate()
-    const link = `/menu/${exercise.topic}/${exercise.num}`
-    return (
-        <button
-            onClick={() => navigate(link)}
-            className={`${styles.button} ${styles[status]}`}>
-            <IconComponent Icon={Icon[status]} className={styles.icon}/>
-            <Label text={status.charAt(0).toUpperCase() + status.slice(1)} size={'medium'}/>
-        </button>
-    )
 }
 
 export default ExercisesScreen

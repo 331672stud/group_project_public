@@ -1,14 +1,15 @@
-import React, {useRef, useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import 'react-complex-tree/lib/style-modern.css';
 import styles from './CodingScreen.module.css'
 import TopBar from "../../Components/TopBar/TopBar.jsx";
-import {useParams} from "react-router-dom";
+import {useParams, useSearchParams} from "react-router-dom";
 import {CodingSpaceContext} from "../../Utility/CodingSpaceContext.jsx";
 import {DragDropProvider} from "@dnd-kit/react";
 import {bar, panel} from "../../Utility/Enums.js";
 import {SideBar} from "../../Components/CodingSpace/SideBar.jsx";
 import {Panel} from "../../Components/CodingSpace/Panel.jsx";
 import {Editor} from "../../Components/CodingSpace/Editor.jsx";
+import {makeTree} from "../../Utility/fakeAPI/files.js";
 
 export function CodingScreen() {
     const treeRef = useRef(null)
@@ -19,10 +20,37 @@ export function CodingScreen() {
     const [expandedItems, setExpandedItems] = useState([]);
     const [focusedItem, setFocusedItem] = useState('root');
     const {topic, id} = useParams()
+    const [searchParams] = useSearchParams()
+    const mode = searchParams.get("mode")
     const [buttonsPos, setButtonsPos] = useState({[panel.tree]: bar.left, [panel.instruction]: bar.right})
     const [panelPos, setPanelPos] = useState({[bar.left]: panel.tree, [bar.right]: panel.instruction});
+    const [task, setTask] = useState({})
+    const [tree, setTree] = useState({})
+    const [files, setFiles] = useState([])
 
-    
+    useEffect(() => {
+        console.log(mode)
+        const e = fetch(`${import.meta.env.VITE_BACKEND_URL}tasks/${topic}/${id}`, {credentials: "include"})
+            .then(res => res.json())
+            .then(data => data.task)
+            .then(task => {
+                setTask(task)
+                setFiles(task['files'])
+                setTree(makeTree(task['files']))
+                return task
+            })
+            .then(task => {
+                if (mode==="view") {
+                    const e = fetch(`${import.meta.env.VITE_BACKEND_URL}tasks/${task.id}`, {credentials: "include"})
+                        .then(res => res.json())
+                        .then(data => data.task)
+                        .then(task => {
+                            setFiles(task['submission'])
+                            setTree(makeTree(task['submission']))
+                        })
+                }
+            })
+    }, [])
 
     function focusItem(item) {
         if (item.isFolder) {
@@ -101,7 +129,11 @@ export function CodingScreen() {
                         focusItem,
                         primaryAction,
                         selectFile,
-                        close
+                        close,
+                        task,
+                        tree,
+                        setFiles,
+                        files
                     }}>
                     <DragDropProvider
                         onDragEnd={(event) => {
@@ -124,7 +156,6 @@ export function CodingScreen() {
                             <Panel position={bar.right}/>
                             <SideBar position={bar.right}/>
                         </div>
-
                     </DragDropProvider>
                 </CodingSpaceContext.Provider>
             </section>

@@ -8,6 +8,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from requests_oauthlib import OAuth1Session
+from pydantic import BaseModel
 
 from usos_api.usos_api_auth import (
     get_request_token,
@@ -265,12 +266,18 @@ def course_tasks(request: Request, course_id: int):
         return {"message": "No tasks in this course", "tasks": []}
     return {"message": f"Tasks for course {course_id}", "tasks": tasks}
 
+class ProgressUpdate(BaseModel):
+    status: str
+    lastViewed: str | None = None
+
 @protected_router.patch("/tasks/{task_id}/progress")
-def update_progress(request: Request, task_id: int):
-    user_id = get_current_user(request)
-    body = request.json()
-    status = body.get("status")
-    last_viewed = body.get("lastViewed")
+def update_progress(
+    task_id: int,
+    payload: ProgressUpdate,
+    user_id: int = Depends(get_current_user),
+    ):
+    status = payload.status
+    last_viewed = payload.lastViewed
     # Upsert into user_task_status
     cursor = conn.cursor()
     cursor.execute("""
@@ -283,9 +290,16 @@ def update_progress(request: Request, task_id: int):
     cursor.close()
     return {"ok": True}
 
+class TaskSubmit(BaseModel):
+    files: list
+
 @protected_router.post("/tasks/{task_id}/submit")
-def submit_task(request: Request, task_id: int, files: list):
-    submission_id = submit_solution(conn, get_current_user(request), task_id, files)
+def submit_task(
+        task_id: int,
+        payload: TaskSubmit,
+        user_id: int = Depends(get_current_user),
+    ):
+    submission_id = submit_solution(conn, user_id, task_id, payload.files)
     enqueue_solution_check(conn, submission_id)
     check_submission(conn, submission_id)
     return {"message": f"Submitted solution for task {task_id}", "submission_id": submission_id}
@@ -296,8 +310,6 @@ def get_submission_result_endpoint(request: Request, submission_id: int):
     if not result:
         raise HTTPException(status_code=404, detail="Submission not found")
     return result
-
-
 
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "SUPER_SECRET_KEY"))
 

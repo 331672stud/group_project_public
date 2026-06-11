@@ -1,0 +1,40 @@
+.button {
+    border-style: hidden;
+    height: 30px;
+    width: 120px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+.button.continue, .button.start, .button.submit {
+    background-color: var(--easy-color);
+}
+
+.button.restart {
+    background-color: var(--medium-color);
+}
+
+.button.view, .button.save {
+    background-color: var(--gray-color);
+}
+
+.button.continue:hover, .button.start:hover, .button.submit:hover {
+    background-color: var(--easy-color-hover);
+}
+
+.button.restart:hover {
+    background-color: var(--medium-color-hover);
+}
+
+.button.view:hover, .button.save:hover {
+    background-color: var(--gray-color-hover);
+}
+
+.icon {
+    color: var(--stroke-color);
+    vertical-align: center;
+    height: 60%;
+}

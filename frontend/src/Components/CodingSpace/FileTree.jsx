@@ -2,7 +2,7 @@ import {useContext, useRef} from "react";
 import {CodingSpaceContext} from "../../Utility/CodingSpaceContext.jsx";
 import {ControlledTreeEnvironment, InteractionMode, Tree} from "react-complex-tree";
 import styles from "./CodingSpace.module.css"
-import {tree} from "../../Utility/fakeAPI/files.js";
+// import {tree} from "../../Utility/fakeAPI/files.js";
 
 export function FileTree() {
     const treeEnvRef = useRef(null);
@@ -11,7 +11,8 @@ export function FileTree() {
             setSelectedItems,
             focusItem,
             primaryAction,
-            treeRef, expandedItems, setExpandedItems, focusedItem
+            treeRef, expandedItems, setExpandedItems, focusedItem,
+            tree
     } = useContext(CodingSpaceContext)
 
 

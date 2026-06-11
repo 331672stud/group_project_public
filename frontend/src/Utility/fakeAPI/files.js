@@ -300,8 +300,9 @@ const files = [
     }
 ]
 
-function makeTree(items) {
+export function makeTree(items) {
     let tree = {}
+    console.log("items", items)
     for (let item of items) {
         let location = []
         const pathSeperated = item.path.split('/')
@@ -313,7 +314,7 @@ function makeTree(items) {
             if(!Object.prototype.hasOwnProperty.call(tree, locationString)) {
                 tree[locationString] = {data: part, index: locationString, children: []}
                 if(part === name) {
-                    tree[locationString]['value'] = item.value
+                    tree[locationString]['content'] = item.content
                     tree[locationString]['language'] = item.language
                 }
                 if(parent !== '')
@@ -327,7 +328,7 @@ function makeTree(items) {
     return tree
 }
 
-export let tree = makeTree(files)
+// export let tree = makeTree(files)
 
 // export let tree = {
 //     root: {
@@ -667,6 +668,3 @@ export let tree = makeTree(files)
 //         language: 'css'
 //     }
 // }
-
-
-console.log(tree)

@@ -2,7 +2,7 @@ import styles from "./CodingSpace.module.css"
 import {useContext, useRef} from "react";
 import {Editor as MonacoEditor} from "@monaco-editor/react"
 import Label from "../Label/Label.jsx";
-import {tree} from "../../Utility/fakeAPI/files.js";
+// import {tree} from "../../Utility/fakeAPI/files.js";
 import {CodingSpaceContext} from "../../Utility/CodingSpaceContext.jsx";
 import {IconComponent} from "../Icon/IconComponent.jsx";
 import {XIcon} from "lucide-react";
@@ -13,12 +13,12 @@ export function Editor() {
         singleTab,
         tabs,
         selectFile,
-        close
+        close,
+        tree,
+        setFiles
     } = useContext(CodingSpaceContext)
     const editorRef = useRef(null);
     const file = fileName !== null ? tree[fileName] : null;
-
-
 
     return <>
         <div className={styles.code}>
@@ -28,8 +28,17 @@ export function Editor() {
                     theme="vs-dark"
                     path={file?.index ?? ''}
                     defaultLanguage={file?.language}
-                    defaultValue={file?.value}
-                    onMount={(editor) => (editorRef.current = editor)}/>)
+                    defaultValue={file?.content}
+                    onMount={(editor) => (editorRef.current = editor)}
+                    options={{
+                        wordWrap: "on",
+                    }}
+                    onChange={(value) => {
+                        setFiles(prev => 
+                            prev.map(f => f.path === file.index ? {...f, content: value ?? ""} : f)
+                        )
+                    }}
+                    />)
                 : <div/>}
         </div>
     </>

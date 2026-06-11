@@ -10,7 +10,8 @@ import {
     SquareChartGantt,
     Settings,
     UserRound,
-    XIcon, Moon
+    XIcon, Moon,
+    Save, Send
 } from "lucide-react";
 
 export const Icon = {
@@ -19,6 +20,8 @@ export const Icon = {
     start: Play,
     continue: Play,
     view: Eye,
-    restart: RotateCcw
+    restart: RotateCcw,
+    save: Save,
+    submit: Send,
 }
 
