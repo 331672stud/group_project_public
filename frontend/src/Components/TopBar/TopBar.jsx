@@ -1,5 +1,5 @@
 import styles from "./TopBar.module.css"
-import {Settings, SquareChartGantt, UserRound, Undo2, BookOpenText} from "lucide-react";
+import {Settings, SquareChartGantt, UserRound, Undo2, BookOpenText, NotebookPen} from "lucide-react";
 import Label from "../Label/Label.jsx";
 import {IconLink} from "../Icon/IconButton/IconButton.jsx";
 import {textConvert} from "../../Utility/textConvert.js";
@@ -7,7 +7,7 @@ import {IconComponent} from "../Icon/IconComponent.jsx";
 import {useContext} from "react";
 import {AuthorizationContext} from "../../Utility/AuthorizationContext.jsx";
 
-function TopBar({topic, small}) {
+function TopBar({topic, small, theory=false}) {
     const {user, setUser} = useContext(AuthorizationContext)
     if(setUser === null)
         return null
@@ -36,7 +36,10 @@ function TopBar({topic, small}) {
             {topic != null ? (<div className={styles.underBar}>
                 <IconLink Icon={Undo2} link={small ? `/menu/${topic}` : '/menu'} className={styles.icon}/>
                 <Label text={topic} size={'medium'} weight={'bold'}/>
-                <IconLink Icon={BookOpenText} link={small ? `/menu/${topic}` : '/menu'} className={styles.icon}/>
+                {theory ? 
+                    <IconLink Icon={NotebookPen} link={`/menu/${topic}`} className={styles.icon}/> :
+                    <IconLink Icon={BookOpenText} link={`/menu/${topic}/theory`} className={styles.icon}/>
+                }
             </div>) : (<></>)}
         </div>
     </>

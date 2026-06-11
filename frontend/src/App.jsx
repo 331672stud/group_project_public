@@ -9,6 +9,7 @@ import {AuthorizationContext} from "./Utility/AuthorizationContext.jsx";
 import Layout from "./Layouts/Layout.jsx";
 import ProtectedLayout from "./Layouts/ProtectedLayout.jsx";
 import LoginPage from "./Pages/LoginPage/LoginPage.jsx";
+import TheoryPage from './Pages/TheoryPage/TheoryPage.jsx';
 
 const router = createBrowserRouter([
     {path: "/", element: <Navigate to={'/menu'} replace/>},
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
                     {path: "/ex", Component: ExercisesScreen},
                     {path: "/menu/:topic/:id", Component: CodingScreen},
                     {path: "/menu/:topic", Component: ExercisesScreen},
+                    {path: "menu/:topic/theory", Component: TheoryPage}
                 ]
             },
             {
