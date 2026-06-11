@@ -55,6 +55,7 @@ CREATE TABLE user_task_status (
     task_id INTEGER REFERENCES tasks(id) ON DELETE CASCADE,
     status VARCHAR(20) DEFAULT 'new' CHECK (status IN ('new','inProgress','done')),
     last_viewed TIMESTAMP,
+    content JSONB NOT NULL,
     PRIMARY KEY (user_id, task_id)
 );
 

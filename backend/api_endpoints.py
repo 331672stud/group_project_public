@@ -2,6 +2,7 @@ import time
 import psycopg2
 from typing import Optional
 import os
+import json
 
 from fastapi import FastAPI, Request, Response, Depends, HTTPException, APIRouter
 from fastapi.responses import RedirectResponse
@@ -269,6 +270,7 @@ def course_tasks(request: Request, course_id: int):
 class ProgressUpdate(BaseModel):
     status: str
     lastViewed: str | None = None
+    files: list[dict] | None = None
 
 @protected_router.patch("/tasks/{task_id}/progress")
 def update_progress(
@@ -278,14 +280,18 @@ def update_progress(
     ):
     status = payload.status
     last_viewed = payload.lastViewed
+    
+    content_json = json.dumps(payload.files) if payload.files is not None else None
     # Upsert into user_task_status
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO user_task_status (user_id, task_id, status, last_viewed)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO user_task_status (user_id, task_id, status, last_viewed, content)
+        VALUES (%s, %s, %s, %s, COALESCE(%s, '[]'::jsonb))
         ON CONFLICT (user_id, task_id) DO UPDATE
-        SET status = EXCLUDED.status, last_viewed = EXCLUDED.last_viewed
-    """, (user_id, task_id, status, last_viewed))
+        SET status = EXCLUDED.status, 
+        last_viewed = EXCLUDED.last_viewed,
+        content = COALESCE(%s, user_task_status.content)
+    """, (user_id, task_id, status, last_viewed, content_json, content_json))
     conn.commit()
     cursor.close()
     return {"ok": True}
