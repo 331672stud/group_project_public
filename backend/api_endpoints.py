@@ -39,6 +39,13 @@ from db_operations.db_operations import (
     get_task_by_topic_and_num_db
 )
 
+from db_operations.pool import(
+    init_pool,
+    close_pool,
+    get_connection,
+    release_connection
+)
+
 from verification import (
     check_submission
 )
@@ -48,21 +55,12 @@ CONSUMER_SECRET = os.getenv("USOS_CONSUMER_SECRET", "YOUR_SECRET")
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 
-for _ in range(30):  # retry for ~30 seconds
+def get_db():
+    conn = get_connection()
     try:
-        conn = psycopg2.connect(
-            host="db",
-            port=5432,
-            user="postgres",
-            password="password",
-            database="postgres"
-        )
-        break
-    except psycopg2.OperationalError:
-        print("Waiting for database...")
-        time.sleep(1)
-else:
-    raise Exception("Database not available")
+        yield conn
+    finally:
+        release_connection(conn)
 
 # login check
 def get_current_user(request: Request):
@@ -97,6 +95,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+def startup_event():
+    init_pool()
+    
+@app.on_event("shutdown")
+def shutdown_event():
+    close_pool()
 
 # api endpoints
 @app.get("/login")
@@ -119,7 +124,8 @@ async def callback(
     request: Request,
     oauth_verifier: Optional[str] = None,
     oauth_token: Optional[str] = None,
-    oauth_problem: Optional[str] = None
+    oauth_problem: Optional[str] = None,
+    conn = Depends(get_db)
 ):
     if oauth_token != request.session.get("request_token"):
         return {"error": "Invalid oauth_token"}
@@ -152,7 +158,7 @@ async def callback(
     return RedirectResponse(FRONTEND_URL)
 
 @app.get("/public-tasks")
-def public_tasks(request: Request):
+def public_tasks(request: Request, conn = Depends(get_db)):
     tasks = get_all_tasks(conn)
     return {"message": "All tasks", "tasks": tasks}
 
@@ -182,42 +188,42 @@ async def my_courses(request: Request):
     return courses
 
 @protected_router.get("/profile")
-def profile(request: Request):
+def profile(request: Request, conn = Depends(get_db)):
     user_data = get_user_data(conn, get_current_user(request))
     return {"message": "Profile endpoint", "user_id": get_current_user(request), "first name": user_data[1], "last name": user_data[2], "user_type": user_data[3]}
 
 @protected_router.get("/assigned_tasks")
-def tasks(request: Request):
+def tasks(request: Request, conn = Depends(get_db)):
     assigned_tasks = get_assigned_tasks(conn, get_current_user(request))
     if(not assigned_tasks):
         return {"message": "No assigned tasks"}
     return {"message": "Assigned tasks", "tasks": assigned_tasks}
 
 @protected_router.get("/tasks")
-def list_tasks(request: Request):
+def list_tasks(request: Request, conn = Depends(get_db)):
     user = get_current_user(request)
     tasks_data = get_tasks_for_user(conn, user)
     return {"tasks": tasks_data}
 
 @protected_router.get("/submissions")
-def submissions(request: Request):
+def submissions(request: Request, conn = Depends(get_db)):
     submissions = get_submissions(conn, get_current_user(request))
     return {"message": "Submissions endpoint: ", "submissions": submissions}
 
 @protected_router.get("/tasks/{task_id}")
-def get_task(request: Request, task_id: int):
+def get_task(request: Request, task_id: int, conn = Depends(get_db)):
     task = get_task_db(conn, task_id, get_current_user(request))
     return {"message": f"Get task with ID {task_id}", "task": task}
 
 @protected_router.get("/tasks/{task_id}/files")
-def task_files(request: Request, task_id: int):
+def task_files(request: Request, task_id: int, conn = Depends(get_db)):
     files = get_task_files(conn, task_id)
     if not files:
         raise HTTPException(status_code=404, detail="Task not found or no files")
     return {"task_id": task_id, "files": files}
 
 @protected_router.get("/topics") #albo u nas tagi
-def get_topics(request: Request):
+def get_topics(request: Request, conn = Depends(get_db)):
     cursor = conn.cursor()
     cursor.execute("SELECT id, name FROM tags ORDER BY name")
     topics = [{"id": row[0], "name": row[1]} for row in cursor.fetchall()]
@@ -225,7 +231,7 @@ def get_topics(request: Request):
     return {"topics": topics}
 
 @protected_router.get("/topics/{tag_id}/tasks")
-def get_tasks_by_topic(request: Request, tag_id: int):
+def get_tasks_by_topic(request: Request, tag_id: int, conn = Depends(get_db)):
     cursor = conn.cursor()
     cursor.execute("""
         SELECT t.id, t.title
@@ -239,7 +245,7 @@ def get_tasks_by_topic(request: Request, tag_id: int):
     return {"tasks": tasks}
 
 @protected_router.get("/tasks/{task_id}/submission")
-def get_my_submission(request: Request, task_id: int):
+def get_my_submission(request: Request, task_id: int, conn = Depends(get_db)):
     user_id = get_current_user(request)
     cursor = conn.cursor()
     cursor.execute("""
@@ -254,13 +260,13 @@ def get_my_submission(request: Request, task_id: int):
     return {"files": row[0]}  
 
 @protected_router.get("/tasks/{topic}/{num}")
-def get_task_by_topic_and_num(request: Request, topic: str, num: int):
+def get_task_by_topic_and_num(request: Request, topic: str, num: int, conn = Depends(get_db)):
     task = get_task_by_topic_and_num_db(conn, topic, num, get_current_user(request))
     return {"message": f"Get task with topic '{topic}' and number {num}", "task": task}
 
 
 @protected_router.get("/courses/{course_id}/tasks")
-def course_tasks(request: Request, course_id: int):
+def course_tasks(request: Request, course_id: int, conn = Depends(get_db)):
     user_id = get_current_user(request)
     tasks = get_course_tasks(conn, course_id)  
     if not tasks:
@@ -277,6 +283,7 @@ def update_progress(
     task_id: int,
     payload: ProgressUpdate,
     user_id: int = Depends(get_current_user),
+    conn = Depends(get_db)
     ):
     status = payload.status
     last_viewed = payload.lastViewed
@@ -304,6 +311,7 @@ def submit_task(
         task_id: int,
         payload: TaskSubmit,
         user_id: int = Depends(get_current_user),
+        conn = Depends(get_db)
     ):
     submission_id = submit_solution(conn, user_id, task_id, payload.files)
     enqueue_solution_check(conn, submission_id)
@@ -311,7 +319,7 @@ def submit_task(
     return {"message": f"Submitted solution for task {task_id}", "submission_id": submission_id}
 
 @protected_router.get("/submissions/{submission_id}/result")
-def get_submission_result_endpoint(request: Request, submission_id: int):
+def get_submission_result_endpoint(request: Request, submission_id: int, conn = Depends(get_db)):
     result = get_submission_result(conn, submission_id)
     if not result:
         raise HTTPException(status_code=404, detail="Submission not found")

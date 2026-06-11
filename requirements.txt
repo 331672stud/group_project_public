@@ -9,3 +9,4 @@ dotenv
 typing
 python-multipart
 pydantic
+gunicorn
