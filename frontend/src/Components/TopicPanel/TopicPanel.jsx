@@ -24,7 +24,7 @@ function TopicPanel({topic}) {
                 </div>
                 <div className={styles.body}>
                     <div className={styles.iconsContainer}>
-                            <IconLink link={`/menu/${topic}`} Icon={BookOpenText} className={styles.button}/>
+                            <IconLink link={`/menu/${topic}/theory`} Icon={BookOpenText} className={styles.button}/>
                             <IconLink link={`/menu/${topic}`} Icon={NotebookPen} className={styles.button}/>
 
                     </div>
@@ -32,7 +32,7 @@ function TopicPanel({topic}) {
                             {exerciseList == null ? (
                                 <div className={styles.loading}>Loading...</div>
                             ) : (
-                                ['theory', 'easy', 'medium', 'hard'].map((diff) => (
+                                ['easy', 'medium', 'hard'].map((diff) => (
                                     <ProgresBar
                                         key={diff}
                                         color={diff}
