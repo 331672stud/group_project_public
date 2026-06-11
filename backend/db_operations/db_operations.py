@@ -56,12 +56,12 @@ def submit_solution(db, user_id, task_id, files):
         # Upsert progress to 'done'
         cursor.execute(
             """
-            INSERT INTO user_task_status (user_id, task_id, status, last_viewed)
-            VALUES (%s, %s, 'done', NOW())
+            INSERT INTO user_task_status (user_id, task_id, status, last_viewed, content)
+            VALUES (%s, %s, 'done', NOW(), %s::jsonb)
             ON CONFLICT (user_id, task_id) DO UPDATE
                 SET status = 'done', last_viewed = NOW()
             """,
-            (user_id, task_id)
+            (user_id, task_id, content_json)
         )
 
         db.commit()
