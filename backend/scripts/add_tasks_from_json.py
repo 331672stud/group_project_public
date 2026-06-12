@@ -38,11 +38,11 @@ for task in tasks:
     task_id = create_task_with_files(
         conn,
         title=task["topic"],
-        difficulty=task["difficulty"],
-        languages=task["languages"],
-        description=task["description"],
-        files=task["files"],
-        tags=[task["topic"].lower()],
+        difficulty=task.get("difficulty"),
+        languages=task.get("languages"),
+        description=task.get("description"),
+        files=task.get("files", []),
+        tags=[task["topic"].lower()] if task.get("topic") else None,
         num=task["num"]
     )
     print(f"Created task with ID {task_id}")
