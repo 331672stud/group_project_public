@@ -95,6 +95,6 @@ SELECT * FROM users WHERE name = ('user1; drop table xyz;')
 
 ## Dodatkowa literatura 
 1. [https://owasp.org/Top10/2025/A05_2025-Injection/](https://owasp.org/Top10/2025/A05_2025-Injection/)
-2. https://owasp.org/www-community/attacks/SQL_Injection
-3. https://sekurak.pl/czym-jest-sql-injection/
-4. https://pl.wikipedia.org/wiki/SQL_injection
+2. [https://owasp.org/www-community/attacks/SQL_Injection](https://owasp.org/www-community/attacks/SQL_Injection)
+3. [https://sekurak.pl/czym-jest-sql-injection/](https://sekurak.pl/czym-jest-sql-injection/)
+4. [https://pl.wikipedia.org/wiki/SQL_injection](https://pl.wikipedia.org/wiki/SQL_injection)
