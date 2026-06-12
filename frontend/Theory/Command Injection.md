@@ -85,7 +85,7 @@ def is_valid_ip(host):
 
 
 ## Dodatkowa literatura 
-1. https://owasp.org/www-community/attacks/Command_Injection
-2. https://en.wikipedia.org/wiki/Code_injection
-3. https://sekurak.pl/tag/command-injection/
+1. [https://owasp.org/www-community/attacks/Command_Injection](https://owasp.org/www-community/attacks/Command_Injection)
+2. [https://en.wikipedia.org/wiki/Code_injection](https://en.wikipedia.org/wiki/Code_injection)
+3. [https://sekurak.pl/tag/command-injection/](https://sekurak.pl/tag/command-injection/)
 

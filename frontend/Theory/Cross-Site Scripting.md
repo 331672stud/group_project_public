@@ -101,4 +101,4 @@ jesteśmy w stanie wyświetlić je w kodzie bez problemu, nie umożliwiając na 
 1. [https://owasp.org/www-community/attacks/xss/](https://owasp.org/www-community/attacks/xss/)
 2. [https://owasp.org/www-community/Types_of_Cross-Site_Scripting](https://owasp.org/www-community/Types_of_Cross-Site_Scripting)
 3. [https://pl.wikipedia.org/wiki/Cross-site_scripting](https://owasp.org/www-community/Types_of_Cross-Site_Scripting)
-4. h[ttps://sekurak.pl/czym-jest-xss/](ttps://sekurak.pl/czym-jest-xss/)
+4. [https://sekurak.pl/czym-jest-xss/](https://sekurak.pl/czym-jest-xss/)
