@@ -74,6 +74,6 @@ buffer[sizeof(buffer) - 1] = '\0';
 
 
 ## Dodatkowa literatura
-1. https://owasp.org/www-community/vulnerabilities/Buffer_Overflow
-2. https://en.wikipedia.org/wiki/Buffer_overflow
-3. https://sekurak.pl/tag/buffer-overflow/
+1. [https://owasp.org/www-community/vulnerabilities/Buffer_Overflow](https://owasp.org/www-community/vulnerabilities/Buffer_Overflow)
+2. [https://en.wikipedia.org/wiki/Buffer_overflow](https://en.wikipedia.org/wiki/Buffer_overflow)
+3. [https://sekurak.pl/tag/buffer-overflow/](https://sekurak.pl/tag/buffer-overflow/)
