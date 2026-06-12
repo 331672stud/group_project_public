@@ -2,9 +2,10 @@ import styles from "./CodingSpace.module.css"
 import {useContext} from "react";
 import {CodingSpaceContext} from "../../Utility/CodingSpaceContext.jsx";
 import { Button } from "../Button/Button.jsx";
+import {bar, panel} from "../../Utility/Enums.js";
 
 export function Instructions() {
-    const {task, files} = useContext(CodingSpaceContext);
+    const {task, files, setButtonsPos, setPanelPos, setSubmissionId} = useContext(CodingSpaceContext);
     const save = () => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}tasks/${task.id}/progress`, {
             method: "PATCH",
@@ -31,7 +32,7 @@ export function Instructions() {
         
     }
     const submit = () => {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}tasks/${task.id}/submit`, {
+        const e = fetch(`${import.meta.env.VITE_BACKEND_URL}tasks/${task.id}/submit`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -44,8 +45,15 @@ export function Instructions() {
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
+            } else {
+                setButtonsPos(prev => {return {...prev, [panel.results]: bar.right}})
+                setPanelPos(prev => {return {...prev, [bar.right]: panel.results}})
             }
+            return response.json()
         })
+        .then(content => {
+            setSubmissionId(content['submission_id'])
+        } )
         
     }
     return <>

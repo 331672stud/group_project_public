@@ -27,6 +27,7 @@ export function CodingScreen() {
     const [task, setTask] = useState({})
     const [tree, setTree] = useState({})
     const [files, setFiles] = useState([])
+    const [submissionId, setSubmissionId] = useState(null)
 
     useEffect(() => {
         console.log(mode)
@@ -133,7 +134,9 @@ export function CodingScreen() {
                         task,
                         tree,
                         setFiles,
-                        files
+                        files,
+                        submissionId,
+                        setSubmissionId
                     }}>
                     <DragDropProvider
                         onDragEnd={(event) => {

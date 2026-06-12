@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useRef, useState} from "react";
 import {CodingSpaceContext} from "../../Utility/CodingSpaceContext.jsx";
 import {bar, panel} from "../../Utility/Enums.js";
 import {Instructions} from "./Instructions.jsx";
+import {Results} from "./Results.jsx"
 import {FileTree} from "./FileTree.jsx";
 import style from "./CodingSpace.module.css";
 
@@ -73,6 +74,7 @@ export function Panel({position}) {
             {
                 panelPos[position] === panel.tree ? <FileTree/> :
                 panelPos[position] === panel.instruction ? <Instructions/> :
+                panelPos[position] === panel.results ? <Results/> :
                 null
             }
             {!collapsed && resizer}
