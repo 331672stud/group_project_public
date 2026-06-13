@@ -27,12 +27,13 @@ tasks = json.load(open("/app/scripts/tasks/tasks.json", "r"))
 
 for task in tasks:
     num = task["num"]
+    topic = task["topic"]
     with conn.cursor() as cur:
-        cur.execute("SELECT 1 FROM tasks WHERE num = %s", (num,))
+        cur.execute("SELECT 1 FROM tasks WHERE num = %s and title = %s", (num, topic))
         exists = cur.fetchone() is not None
 
     if exists:
-        print(f"Task with num {num} already exists, skipping.")
+        print(f"Task with num {num} and topic {topic} already exists, skipping.")
         continue
     
     task_id = create_task_with_files(
