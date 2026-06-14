@@ -70,18 +70,9 @@ for task in tasks:
                         (task_id, file_path, language, content)
                     )
                     print(f"Inserted file {file_path} for task {task_id}")
-            # update answer if provided (store as JSON string if it's an object)
+            # update answer if provided
             if task.get("answer") is not None:
-                ans = task.get("answer")
-                try:
-                    # if answer is a dict/list, serialize to JSON string
-                    if isinstance(ans, (dict, list)):
-                        ans_to_store = json.dumps(ans, ensure_ascii=False)
-                    else:
-                        ans_to_store = str(ans)
-                except Exception:
-                    ans_to_store = str(ans)
-                cur.execute("UPDATE tasks SET answer = %s WHERE id = %s", (ans_to_store, task_id))
+                cur.execute("UPDATE tasks SET answer = %s WHERE id = %s", (task.get("answer"), task_id))
 
             # ensure tags exist and are linked
             for tag in ([task["topic"].lower()] if task.get("topic") else []) + (task.get("tags") or []):
@@ -109,15 +100,7 @@ for task in tasks:
     # set answer if provided
     if task.get("answer") is not None:
         with conn.cursor() as cur:
-            ans = task.get("answer")
-            try:
-                if isinstance(ans, (dict, list)):
-                    ans_to_store = json.dumps(ans, ensure_ascii=False)
-                else:
-                    ans_to_store = str(ans)
-            except Exception:
-                ans_to_store = str(ans)
-            cur.execute("UPDATE tasks SET answer = %s WHERE id = %s", (ans_to_store, task_id))
+            cur.execute("UPDATE tasks SET answer = %s WHERE id = %s", (task.get("answer"), task_id))
             conn.commit()
     print(f"Created task with ID {task_id}")
 
