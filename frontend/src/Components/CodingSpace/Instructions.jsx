@@ -75,22 +75,24 @@ export function Instructions() {
 
     return <>
         <div className={styles.instructions}>
-                {task?.answer !== undefined && task?.answer !== null ? (
-                    <div style={{marginBottom: '16px'}}>
-                        <h4>Odpowiedź</h4>
-                        <AnswerBox onSubmit={submitAnswer} result={answerResult} />
-                    </div>
-                ) : null}
                 <div>
                     <h3>Polecenie</h3>
                     <p>
                         {task?.description}
                     </p>
                 </div>
-            <div style={{paddingBottom: "30px"}}>
-                <Button status={"save"} action={save}/>
-                <Button status={"submit"} action={submit}/>
-            </div>
+
+                {task?.answer !== undefined && task?.answer !== null ? (
+                    <div style={{marginTop: '12px', marginBottom: '16px'}}>
+                        <h4>Odpowiedź</h4>
+                        <AnswerBox onSubmit={submitAnswer} result={answerResult} />
+                    </div>
+                ) : (
+                    <div style={{paddingBottom: "30px"}}>
+                        <Button status={"save"} action={save}/>
+                        <Button status={"submit"} action={submit}/>
+                    </div>
+                )}
             
         </div>
     </>
