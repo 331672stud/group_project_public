@@ -7,8 +7,19 @@ export default function MarkdownPage({ file }) {
 
   useEffect(() => {
     fetch(file)
-      .then(res => res.text())
-      .then(setContent);
+      .then(async (res) => {
+        const text = await res.text();
+        const ct = res.headers.get("content-type") || "";
+
+        if (ct.includes("text/html") || text.trim().toLowerCase().startsWith("<!doctype html") || text.includes("<html")) {
+          setContent(`# Błąd
+Nie znaleziono pliku: ${file}`);
+        } else {
+          setContent(text);
+        }
+      })
+      .catch(() => setContent(`# Błąd
+Nie można wczytać pliku: ${file}`));
   }, [file]);
 
   return <div className={styles.markdown}><ReactMarkdown>{content}</ReactMarkdown></div>;

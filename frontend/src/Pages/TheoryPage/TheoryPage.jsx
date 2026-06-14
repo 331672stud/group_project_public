@@ -6,15 +6,15 @@ import styles from "./TheoryPage.module.css"
 export default function TheoryPage() {
   const { topic } = useParams();
 
-  const link = "../../Theory/" + topic + ".md"
+  const link = topic
+    ? "../../Theory/" + encodeURIComponent(topic) + ".md"
+    : "../../Theory/404.md"
 
   return (
     <>
       <TopBar topic={topic} theory/>
       <div className={styles.pageWrapper}>
-        <MarkdownPage
-        file={link ?? "../../Theory/404.md"}
-        />
+        <MarkdownPage file={link} />
       </div>
       
     </>
