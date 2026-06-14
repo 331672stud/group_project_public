@@ -1,11 +1,13 @@
 import styles from "./CodingSpace.module.css"
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {CodingSpaceContext} from "../../Utility/CodingSpaceContext.jsx";
 import { Button } from "../Button/Button.jsx";
 import {bar, panel} from "../../Utility/Enums.js";
 
 export function Instructions() {
     const {task, files, setButtonsPos, setPanelPos, setSubmissionId} = useContext(CodingSpaceContext);
+    const [answerResult, setAnswerResult] = useState(null)
+
     const save = () => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}tasks/${task.id}/progress`, {
             method: "PATCH",
@@ -51,14 +53,40 @@ export function Instructions() {
         } )
         
     }
+
+    const submitAnswer = (answer) => {
+        setAnswerResult({status: 'pending'})
+        fetch(`${import.meta.env.VITE_BACKEND_URL}tasks/${task.id}/submit_answer`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            credentials: "include",
+            body: JSON.stringify({answer})
+        })
+        .then(r => r.json())
+        .then(res => {
+            if (res.correct) {
+                setAnswerResult({status: 'ok', message: 'Poprawna odpowiedź'})
+            } else {
+                setAnswerResult({status: 'error', message: 'Niepoprawna odpowiedź'})
+            }
+        })
+        .catch(e => setAnswerResult({status: 'error', message: 'Błąd wysyłania odpowiedzi'}))
+    }
+
     return <>
         <div className={styles.instructions}>
-            <div>
-                <h3>Polecenie</h3>
-                <p>
-                    {task?.description}
-                </p>
-            </div>
+                {task?.answer !== undefined && task?.answer !== null ? (
+                    <div style={{marginBottom: '16px'}}>
+                        <h4>Odpowiedź</h4>
+                        <AnswerBox onSubmit={submitAnswer} result={answerResult} />
+                    </div>
+                ) : null}
+                <div>
+                    <h3>Polecenie</h3>
+                    <p>
+                        {task?.description}
+                    </p>
+                </div>
             <div style={{paddingBottom: "30px"}}>
                 <Button status={"save"} action={save}/>
                 <Button status={"submit"} action={submit}/>
@@ -66,4 +94,26 @@ export function Instructions() {
             
         </div>
     </>
+}
+
+function AnswerBox({onSubmit, result}){
+    const handle = (e) => {
+        e.preventDefault();
+        const v = e.target.elements['answer'].value
+        onSubmit(v)
+    }
+    const color = result ? (result.status === 'ok' ? 'green' : (result.status === 'pending' ? 'gray' : 'red')) : null
+    return (
+        <form onSubmit={handle} style={{display:'flex', gap: '8px', flexDirection: 'column', marginTop: '8px'}}>
+            <div style={{display:'flex', gap:'8px'}}>
+                <input name="answer" placeholder="Wpisz odpowiedź" style={{flex:1, padding:'6px'}} />
+                <button type="submit">Wyślij</button>
+            </div>
+            {result && result.status !== 'pending' ? (
+                <div style={{marginTop: '6px', color: color}}>
+                    {result.message}
+                </div>
+            ) : null}
+        </form>
+    )
 }
