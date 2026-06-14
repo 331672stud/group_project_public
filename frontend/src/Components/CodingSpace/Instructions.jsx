@@ -62,12 +62,19 @@ export function Instructions() {
             credentials: "include",
             body: JSON.stringify({answer})
         })
-        .then(r => r.json())
-        .then(res => {
+        .then(r => r.json().then(data => ({ok: r.ok, data})))
+        .then(({ok, data}) => {
+            if (!ok) {
+                const msg = data?.detail || data?.message || 'Błąd wysyłania odpowiedzi'
+                setAnswerResult({status: 'error', message: msg})
+                return
+            }
+            const res = data
             if (res.correct) {
                 setAnswerResult({status: 'ok', message: 'Poprawna odpowiedź'})
             } else {
-                setAnswerResult({status: 'error', message: 'Niepoprawna odpowiedź'})
+                const msg = res.message || 'Niepoprawna odpowiedź'
+                setAnswerResult({status: 'error', message: msg})
             }
         })
         .catch(e => setAnswerResult({status: 'error', message: 'Błąd wysyłania odpowiedzi'}))
