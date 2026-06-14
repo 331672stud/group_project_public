@@ -339,24 +339,28 @@ def submit_answer(task_id: int, payload: AnswerSubmit, user_id: int = Depends(ge
     task = get_task_db(conn, task_id, user_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    correct = task.get("answer")
+    # get canonical answer directly from DB so we can validate regardless of requester role
+    cursor = conn.cursor()
+    cursor.execute("SELECT answer FROM tasks WHERE id = %s", (task_id,))
+    row = cursor.fetchone()
+    correct = row[0] if row else None
     if correct is None:
         raise HTTPException(status_code=400, detail="Task does not accept answer submissions")
 
     user_answer = (payload.answer or "").strip()
 
-    # helper to normalize answers into tokens
+
     import re, json as _json
     def tokenize(s: str):
         parts = [p.strip() for p in re.split(r"[;,\\s]+", s) if p.strip()]
         return parts
 
-    # detect if stored correct answer is JSON (nested format)
+  
     stored = correct
     ordered_flag = False
     correct_value = None
     try:
-        # if correct was stored as JSON string representing object, parse it
+
         if isinstance(correct, str):
             try:
                 parsed = _json.loads(correct)
@@ -379,7 +383,6 @@ def submit_answer(task_id: int, payload: AnswerSubmit, user_id: int = Depends(ge
     is_multi = len(correct_tokens) > 1
 
     if is_multi and ordered_flag:
-        # ordered comparison: count correct tokens in correct positions
         matches = 0
         for i, t in enumerate(correct_tokens):
             if i < len(user_tokens) and user_tokens[i].lower() == t.lower():
@@ -393,7 +396,6 @@ def submit_answer(task_id: int, payload: AnswerSubmit, user_id: int = Depends(ge
         else:
             message = f'Partially correct ({matches}/{len(correct_tokens)})'
     elif is_multi:
-        # unordered set comparison
         correct_set = set([t.lower() for t in correct_tokens])
         user_set = set([t.lower() for t in user_tokens])
         intersection = correct_set.intersection(user_set)
@@ -408,15 +410,13 @@ def submit_answer(task_id: int, payload: AnswerSubmit, user_id: int = Depends(ge
         else:
             message = f'Partially correct ({len(intersection)}/{len(correct_set)})'
     else:
-        # single-string answer: case-insensitive trimmed equality
         is_correct = user_answer.strip().lower() == str(correct_value).strip().lower()
         score = 100.0 if is_correct else 0.0
         message = 'Correct' if is_correct else 'Incorrect'
 
-    # store submission as JSONB payload with a special 'answer' file
+
     submission_id = submit_solution(conn, user_id, task_id, [{"path": "answer", "language": "text", "content": user_answer}])
 
-    # insert immediate result
     cursor = conn.cursor()
     try:
         status = 'completed'
