@@ -140,14 +140,30 @@ def get_task(db, task_id, user_id):
     cursor = db.cursor()
     try:
         # Basic task info
-        cursor.execute(
-            """
-            SELECT id, title, description, difficulty, languages
-            FROM tasks
-            WHERE id = %s
-            """,
-            (task_id,)
-        )
+        # determine user role: 0 = student, 1/2 = staff
+        cursor.execute("SELECT user_type FROM users WHERE id = %s", (user_id,))
+        urow = cursor.fetchone()
+        user_type = urow[0] if urow else 0
+
+        # only include the correct `answer` in the returned payload for staff users
+        if user_type and user_type > 0:
+            cursor.execute(
+                """
+                SELECT id, title, description, difficulty, languages, COALESCE(answer, NULL)
+                FROM tasks
+                WHERE id = %s
+                """,
+                (task_id,)
+            )
+        else:
+            cursor.execute(
+                """
+                SELECT id, title, description, difficulty, languages, NULL as answer
+                FROM tasks
+                WHERE id = %s
+                """,
+                (task_id,)
+            )
         row = cursor.fetchone()
         if not row:
             return None
@@ -158,6 +174,7 @@ def get_task(db, task_id, user_id):
             "description": row[2],
             "difficulty": row[3],
             "languages": row[4],          # list or None
+            "answer": row[5]
         }
 
         # Tags (topics)
@@ -211,10 +228,19 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
     """Zwraca zadanie o danym topicu (tagu) i num, wraz z informacją o statusie dla user_id."""
     cursor = db.cursor()
     try:
-        cursor.execute(
-            """
+        # determine user role: only expose 'answer' to staff users
+        cursor.execute("SELECT user_type FROM users WHERE id = %s", (user_id,))
+        urow = cursor.fetchone()
+        user_type = urow[0] if urow else 0
+
+        if user_type and user_type > 0:
+            answer_select = "COALESCE(t.answer, NULL)"
+        else:
+            answer_select = "NULL as answer"
+
+        cursor.execute(f"""
             SELECT
-                t.id, t.title, t.description, t.difficulty, t.languages,
+                t.id, t.title, t.description, t.difficulty, t.languages, {answer_select},
                 COALESCE(uts.status, 'new') AS status,
                 uts.last_viewed AS last_viewed,
                 COALESCE(
@@ -242,9 +268,10 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
             "description": row[2],
             "difficulty": row[3],
             "languages": row[4],
-            "status": row[5],
-            "lastViewed": row[6].isoformat() if row[6] else None,
-            "tags": row[7]
+            "answer": row[5],
+            "status": row[6],
+            "lastViewed": row[7].isoformat() if row[7] else None,
+            "tags": row[8]
         }
 
         # Task files (folder tree)
