@@ -3,7 +3,7 @@ services:
     build: .
     container_name: project_dev
     ports:
-      - "8443:8443"
+      - "8444:8443"
     volumes:
       - .:/workspace
       - code_server_config:/home/coder/.local/share/code-server
@@ -86,8 +86,8 @@ services:
       context: .
       dockerfile: nginx/Dockerfile
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
     depends_on:
       - web
 
