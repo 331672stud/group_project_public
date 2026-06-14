@@ -152,7 +152,7 @@ def get_task(db, task_id, user_id):
         if user_type and user_type > 0:
             cursor.execute(
                 """
-                SELECT id, title, description, difficulty, languages, COALESCE(answer, NULL)
+                SELECT id, title, description, difficulty, languages, COALESCE(answer, NULL), (answer IS NOT NULL) as has_answer
                 FROM tasks
                 WHERE id = %s
                 """,
@@ -161,7 +161,7 @@ def get_task(db, task_id, user_id):
         else:
             cursor.execute(
                 """
-                SELECT id, title, description, difficulty, languages, NULL as answer
+                SELECT id, title, description, difficulty, languages, NULL as answer, (answer IS NOT NULL) as has_answer
                 FROM tasks
                 WHERE id = %s
                 """,
@@ -177,7 +177,8 @@ def get_task(db, task_id, user_id):
             "description": row[2],
             "difficulty": row[3],
             "languages": row[4],          # list or None
-            "answer": row[5]
+            "answer": row[5],
+            "has_answer": bool(row[6])
         }
 
       
@@ -239,14 +240,11 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
         except Exception:
             user_type = 0
 
-        if user_type > 0:
-            answer_select = "COALESCE(t.answer, NULL)"
-        else:
-            answer_select = "NULL as answer"
+        answer_select = "COALESCE(t.answer, NULL)"
 
         cursor.execute(f"""
             SELECT
-                t.id, t.title, t.description, t.difficulty, t.languages, {answer_select},
+                t.id, t.title, t.description, t.difficulty, t.languages, {answer_select}, (t.answer IS NOT NULL) as has_answer,
                 COALESCE(uts.status, 'new') AS status,
                 uts.last_viewed AS last_viewed,
                 COALESCE(
@@ -275,9 +273,10 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
             "difficulty": row[3],
             "languages": row[4],
             "answer": row[5],
-            "status": row[6],
-            "lastViewed": row[7].isoformat() if row[7] else None,
-            "tags": row[8]
+            "has_answer": bool(row[6]),
+            "status": row[7],
+            "lastViewed": row[8].isoformat() if row[8] else None,
+            "tags": row[9]
         }
 
         # Task files (folder tree)
