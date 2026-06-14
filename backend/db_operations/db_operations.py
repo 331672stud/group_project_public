@@ -143,9 +143,12 @@ def get_task(db, task_id, user_id):
         # determine user role: 0 = student, 1/2 = staff
         cursor.execute("SELECT user_type FROM users WHERE id = %s", (user_id,))
         urow = cursor.fetchone()
-        user_type = urow[0] if urow else 0
+        try:
+            user_type = int(urow[0]) if urow and urow[0] is not None else 0
+        except Exception:
+            user_type = 0
 
-        # only include the correct `answer` in the returned payload for staff users
+   
         if user_type and user_type > 0:
             cursor.execute(
                 """
@@ -177,7 +180,7 @@ def get_task(db, task_id, user_id):
             "answer": row[5]
         }
 
-        # Tags (topics)
+      
         cursor.execute(
             """
             SELECT t.name
@@ -190,7 +193,7 @@ def get_task(db, task_id, user_id):
         )
         task["tags"] = [r[0] for r in cursor.fetchall()]
 
-        # Task files (folder tree)
+        
         cursor.execute(
             """
             SELECT file_path, language, content
@@ -205,7 +208,7 @@ def get_task(db, task_id, user_id):
             for r in cursor.fetchall()
         ]
 
-        # User's latest submission (if any)
+      
         cursor.execute(
             """
             SELECT content
@@ -228,12 +231,15 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
     """Zwraca zadanie o danym topicu (tagu) i num, wraz z informacją o statusie dla user_id."""
     cursor = db.cursor()
     try:
-        # determine user role: only expose 'answer' to staff users
+        
         cursor.execute("SELECT user_type FROM users WHERE id = %s", (user_id,))
         urow = cursor.fetchone()
-        user_type = urow[0] if urow else 0
+        try:
+            user_type = int(urow[0]) if urow and urow[0] is not None else 0
+        except Exception:
+            user_type = 0
 
-        if user_type and user_type > 0:
+        if user_type > 0:
             answer_select = "COALESCE(t.answer, NULL)"
         else:
             answer_select = "NULL as answer"
@@ -289,7 +295,7 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
             for r in cursor.fetchall()
         ]
 
-        # User's latest submission (if any)
+     
         cursor.execute(
             """
             SELECT content
