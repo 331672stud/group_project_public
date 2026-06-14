@@ -15,13 +15,8 @@ export function Instructions() {
             credentials: "include",
             body: JSON.stringify({
                 status: "inProgress",
-                lastViewed: new Date().toLocaleString("pl-PL", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                    }),
+                lastViewed: new Date().toISOString(),
+                files: files
             }),
         })
         .then(response => {
