@@ -89,7 +89,7 @@ export function Instructions() {
                     </p>
                 </div>
 
-                {task?.answer !== undefined && task?.answer !== null ? (
+                {task?.has_answer ? (
                     <div style={{marginTop: '12px', marginBottom: '16px'}}>
                         <h4>Odpowiedź</h4>
                         <AnswerBox onSubmit={submitAnswer} result={answerResult} />
