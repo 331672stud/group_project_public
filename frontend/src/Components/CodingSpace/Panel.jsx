@@ -9,7 +9,7 @@ import style from "./CodingSpace.module.css";
 export function Panel({position}) {
     const {panelPos} = useContext(CodingSpaceContext)
 
-    const [expandedWidth, setExpandedWidth] = useState(200);
+    const [expandedWidth, setExpandedWidth] = useState(250);
     const collapsed = panelPos[position] === panel.none
     const width = collapsed ? 0 : expandedWidth;
     const [activeResizer, setActiveResizer] = useState(false);

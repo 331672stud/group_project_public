@@ -1,0 +1,202 @@
+\relax 
+\providecommand\zref@newlabel[2]{}
+\providecommand{\transparent@use}[1]{}
+\providecommand\babel@aux[2]{}
+\@nameuse{bbl@beforestart}
+\catcode `"\active 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\babel@aux{polish}{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Wstęp}{4}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Backend systemu}{4}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Architektura systemu}{4}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Opis serwisów}{4}{subsubsection.2.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Wolumeny i trwałość danych}{5}{subsubsection.2.1.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Widok uruchomionych kontenerów - \texttt  {docker-pretty-ps --slim} pokazuje sześć serwisów.}}{5}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:dockerps}{{1}{5}{Widok uruchomionych kontenerów - \texttt {docker-pretty-ps --slim} pokazuje sześć serwisów}{figure.caption.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Widok szczegółowy konteneru nginx - \texttt  {docker-pretty-ps} pokazuje między innymi połączenie tcp na portach, zapewniające dostarczenie pakietów.}}{6}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:dockerps}{{2}{6}{Widok szczegółowy konteneru nginx - \texttt {docker-pretty-ps} pokazuje między innymi połączenie tcp na portach, zapewniające dostarczenie pakietów}{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.3}Struktura katalogów - ogólny zarys}{6}{subsubsection.2.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.4}Testy i spostrzeżenia}{6}{subsubsection.2.1.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Schemat komunikacji między kontenerami.}}{7}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:flow}{{3}{7}{Schemat komunikacji między kontenerami}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Struktura bazy danych}{7}{subsection.2.2}\protected@file@percent }
+\newlabel{sec:backend_data_structure}{{2.2}{7}{Struktura bazy danych}{subsection.2.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Konfiguracja serwera Nginx jako odwrotnego proxy}{8}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.1}Architektura}{8}{subsubsection.2.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.2}Rate limiting}{9}{subsubsection.2.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.3}Terminacja SSL i certyfikat samopodpisany}{9}{subsubsection.2.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.4}Nagłówki bezpieczeństwa HTTP}{10}{subsubsection.2.3.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Nagłówki bezpieczeństwa widoczne w narzędziach deweloperskich przeglądarki.}}{10}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:headers}{{4}{10}{Nagłówki bezpieczeństwa widoczne w narzędziach deweloperskich przeglądarki}{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.5}Testy, spostrzeżenia i wnioski}{11}{subsubsection.2.3.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Błąd 400 otrzymany po próbie połączenia http na porcie 443.}}{11}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:flow}{{5}{11}{Błąd 400 otrzymany po próbie połączenia http na porcie 443}{figure.caption.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Fragment logów pokazujący przekierowanie z http na https.}}{11}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:flow}{{6}{11}{Fragment logów pokazujący przekierowanie z http na https}{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Interfejs REST API}{11}{subsection.2.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Prezentacja dokumentacji Swagger.}}{12}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:flow}{{7}{12}{Prezentacja dokumentacji Swagger}{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.1}Endpointy publiczne}{12}{subsubsection.2.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.2}Endpointy chronione (wymagają zalogowania)}{12}{subsubsection.2.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Plik JSON zwracany przez endpoint \texttt  {my-courses}.}}{13}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:flow}{{8}{13}{Plik JSON zwracany przez endpoint \texttt {my-courses}}{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Przykładowa, niepełna lista zadań dla tagu \texttt  {SQL Injection}.}}{13}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:flow}{{9}{13}{Przykładowa, niepełna lista zadań dla tagu \texttt {SQL Injection}}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Przykładowa lista \texttt  {submissions}.}}{14}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:flow}{{10}{14}{Przykładowa lista \texttt {submissions}}{figure.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Przykładowy wynik po sprawdzeniu niewykonanego zadania.}}{14}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:flow}{{11}{14}{Przykładowy wynik po sprawdzeniu niewykonanego zadania}{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.3}Metody przeznaczone stricte dla prowadzących zajęć}{15}{subsubsection.2.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Integracja z USOS}{15}{subsection.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6}Pooling połączeń}{15}{subsection.2.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.1}Zarządzanie połączeniami z bazą danych i automatyczne inicjowanie zadań}{15}{subsubsection.2.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.2}Automatyczne ładowanie zadań}{16}{subsubsection.2.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7}Bezpieczeństwo}{16}{subsection.2.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.8}Podsumowanie}{16}{subsection.2.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Frontend systemu}{17}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Wstęp}{17}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Ustalony plan prac}{17}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Stos technologiczny}{17}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Projekt interfejsu graficznego}{17}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.1}Podstawowe zasoby}{17}{subsubsection.3.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Warianty typograficzne.}}{17}{figure.caption.12}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Zbiór ikon Lucide wykorzystanych w projekcie.}}{18}{figure.caption.13}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Paleta kolorów. O lewej: kolory edytora kodu, bazowe kolory interfejsu, kolory akcentujące.}}{18}{figure.caption.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.2}Atomy}{18}{subsubsection.3.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Warianty etykiet wykorzystujące warianty typograficzne.}}{19}{figure.caption.15}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Atomy przygotowane do budowy kafla tematu, w tym paski postępu ukończenia zadań.}}{19}{figure.caption.16}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces Kafelek zadania z wariantami poziomu trudności (łatwy, średni, trudny).}}{19}{figure.caption.17}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {18}{\ignorespaces Zakładki edytora kodu z wariantami.}}{20}{figure.caption.18}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {19}{\ignorespaces Pozycje menu (foldery/pliki) w edytorze kodu z wariantami.}}{20}{figure.caption.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.3}Molekuły}{20}{subsubsection.3.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {20}{\ignorespaces Warianty górnej belki.}}{20}{figure.caption.20}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces Przyciski wykorzystywane w panelu kontekstowym zadania oraz w edytorze kodu.}}{20}{figure.caption.21}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {22}{\ignorespaces Obszar edytora kodu, pasek boczny i pasek zakładek.}}{21}{figure.caption.22}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {23}{\ignorespaces Panele boczne edytora kodu - lista plików i opis zadania.}}{22}{figure.caption.23}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {24}{\ignorespaces Kontekst zadania.}}{23}{figure.caption.24}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {25}{\ignorespaces Lista zadań w kontekście tematu.}}{23}{figure.caption.25}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {26}{\ignorespaces Etykieta z etykietą.}}{23}{figure.caption.26}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {27}{\ignorespaces Kafelek tematu.}}{24}{figure.caption.27}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {28}{\ignorespaces Pasek nawigacji w kontekście tematu i w obszarze kodowania.}}{24}{figure.caption.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.4}Organizmy}{24}{subsubsection.3.4.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {29}{\ignorespaces Bazowe okno pod układanie ekranów.}}{25}{figure.caption.29}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {30}{\ignorespaces Lista tematów.}}{26}{figure.caption.30}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {31}{\ignorespaces Kontekst tematu z listą zadań i oknem kontekstu wybranego zadania.}}{26}{figure.caption.31}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {32}{\ignorespaces Obszar kodowania.}}{27}{figure.caption.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.5}Widoki}{27}{subsubsection.3.4.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {33}{\ignorespaces Widok listy tematów.}}{28}{figure.caption.33}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {34}{\ignorespaces Widok listy zadań w kontekście tematu.}}{28}{figure.caption.34}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {35}{\ignorespaces Widok kodowania.}}{29}{figure.caption.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.6}Niewykorzystane elementy}{29}{subsubsection.3.4.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {36}{\ignorespaces Niewykorzystane atomy.}}{29}{figure.caption.36}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {37}{\ignorespaces Niewykorzystane menu boczne.}}{30}{figure.caption.37}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {38}{\ignorespaces Niewykorzystane organizmy.}}{30}{figure.caption.38}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {39}{\ignorespaces Widok listy tematów z niezaimplementowanym menu bocznym.}}{31}{figure.caption.39}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Szczegóły implementacyjne}{31}{subsection.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.1}Struktura projektu}{31}{subsubsection.3.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.2}Pełne drzewo projektu}{31}{subsubsection.3.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.3}Komponenty}{33}{subsubsection.3.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.4}Strony}{33}{subsubsection.3.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.5}Routing}{34}{subsubsection.3.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.6}Style aplikacji}{34}{subsubsection.3.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Widoki aplikacji}{34}{subsection.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.1}Widok logowania}{34}{subsubsection.3.6.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {40}{\ignorespaces Ekran z przyciskiem do logowania przez USOS.}}{35}{figure.caption.40}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {41}{\ignorespaces Ekran do logowania CAS USOS.}}{35}{figure.caption.41}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {42}{\ignorespaces Ekran główny aplikacji po zalogowaniu z górną belką z nazwiskiem zalogowanego użytkownika.}}{36}{figure.caption.42}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.2}Widok listy tematów}{36}{subsubsection.3.6.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {43}{\ignorespaces Ekran główny aplikacji z listą kafli tematów.}}{36}{figure.caption.43}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {44}{\ignorespaces Widok kafla po najechaniu na przycisk teorii.}}{37}{figure.caption.44}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {45}{\ignorespaces Widok kafla po najechaniu na przycisk zadań.}}{37}{figure.caption.45}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.3}Widok teorii w kontekście tematu}{37}{subsubsection.3.6.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {46}{\ignorespaces Widok ze wstępem teoretycznym do wybranego tematu.}}{38}{figure.caption.46}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.4}Widok listy zadań w kontekście tematu}{38}{subsubsection.3.6.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {47}{\ignorespaces Widok kafelków z zadaniami w kontekście tematu.}}{39}{figure.caption.47}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {48}{\ignorespaces Widok panelu szczegółów zadania w statusie \textbf  {new}.}}{40}{figure.caption.48}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {49}{\ignorespaces Widok panelu szczegółów zadania w statusie \textbf  {inProgress}.}}{40}{figure.caption.49}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {50}{\ignorespaces Widok panelu szczegółów zadania w statusie \textbf  {done}.}}{41}{figure.caption.50}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.5}Widok kodowania}{41}{subsubsection.3.6.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {51}{\ignorespaces Edytor kodu.}}{41}{figure.caption.51}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {52}{\ignorespaces Zmieniona szerokość paneli bocznych.}}{42}{figure.caption.52}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.6}Integracja z API Backendowym}{42}{subsubsection.3.6.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.7}Zarządzanie stanem środowiska}{42}{subsubsection.3.6.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.8}Obsługa interakcji Drag and Drop}{42}{subsubsection.3.6.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {53}{\ignorespaces Przeciąganie panelu bocznego - złapany za ikonę na prawej belce.}}{43}{figure.caption.53}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {54}{\ignorespaces Panel boczny z prawej belki przeniesiony do lewej belki.}}{43}{figure.caption.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Podsumowanie i wnioski}{43}{subsection.3.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Model LLM - SCLA\_ML\_vuln\_detector}{45}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Wstęp}{45}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Stos technologiczny}{45}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Stos technologiczny wykorzystany w celu stworzenia \emph  {SCLA\_ML\_vuln\_detector}.}}{46}{table.caption.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Zbiór Danych}{46}{subsection.4.3}\protected@file@percent }
+\newlabel{ssec:model_dataset}{{4.3}{46}{Zbiór Danych}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Źródło danych - Vulnerability fix dataset}{46}{subsubsection.4.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Rozkład klas podatności w surowym zbiorze danych.}}{47}{table.caption.56}\protected@file@percent }
+\newlabel{tab:dataset_vuln_types}{{4.3.1}{47}{Źródło danych - Vulnerability fix dataset}{table.caption.56}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Rozmiary partycji zbioru danych}}{47}{table.caption.57}\protected@file@percent }
+\newlabel{tab:dataset_split}{{4.3.1}{47}{Źródło danych - Vulnerability fix dataset}{table.caption.57}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Architektura Modelu}{48}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Wybór modelu bazowego}{48}{subsubsection.4.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.2}Kwantyzacja modelu}{48}{subsubsection.4.4.2}\protected@file@percent }
+\newlabel{sssec:model_quantization}{{4.4.2}{48}{Kwantyzacja modelu}{subsubsection.4.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Dostrajanie parametryczne - PEFT}{48}{subsection.4.5}\protected@file@percent }
+\newlabel{ssec:model_peft}{{4.5}{48}{Dostrajanie parametryczne - PEFT}{subsection.4.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Potok Treningowy}{50}{subsection.4.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.1}Wstępna tokenizacja danych}{50}{subsubsection.4.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.2}Konfiguracja treningu}{51}{subsubsection.4.6.2}\protected@file@percent }
+\newlabel{sssec:model_configuration}{{4.6.2}{51}{Konfiguracja treningu}{subsubsection.4.6.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.3}Długość sekwencji}{53}{subsubsection.4.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.4}Czas i przebieg treningu}{53}{subsubsection.4.6.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Statystyki procesu treningowego}}{53}{table.caption.58}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Eksport wyuczonego modelu}{53}{subsection.4.7}\protected@file@percent }
+\newlabel{ssec:model_export}{{4.7}{53}{Eksport wyuczonego modelu}{subsection.4.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Porównanie opcji kwantyzacji GGUF porównanych w ramach implementacji projektu.}}{54}{table.caption.59}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Ewaluacja Modelu}{54}{subsection.4.8}\protected@file@percent }
+\newlabel{ssec:model_evaluation}{{4.8}{54}{Ewaluacja Modelu}{subsection.4.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.8.1}Procedura testowania}{54}{subsubsection.4.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.8.2}Wyniki}{54}{subsubsection.4.8.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Wyniki końcowej ewaluacji na wydzielonym zbiorze testowym.}}{54}{table.caption.60}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {55}{\ignorespaces Macierz błędu stworzona podczas ostatecznej oceny modelu.}}{55}{figure.caption.61}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.8.3}Ocena wyników}{55}{subsubsection.4.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Konfiguracja serwera Ollama}{56}{subsection.4.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.10}Konteneryzacja w środowisku Docker}{57}{subsection.4.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.11}Opóźnienie inferencji}{57}{subsection.4.11}\protected@file@percent }
+\newlabel{ssec:model_latency}{{4.11}{57}{Opóźnienie inferencji}{subsection.4.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.12}Klient API w Języku Python}{57}{subsection.4.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.12.1}Kluczowe funkcjonalności}{57}{subsubsection.4.12.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.12.2}Formatowanie promptów}{58}{subsubsection.4.12.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.13}Podsumowanie}{58}{subsection.4.13}\protected@file@percent }
+\newlabel{ssec:model_summary}{{4.13}{58}{Podsumowanie}{subsection.4.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Teksty teoretyczne i przykładowe zadania}{59}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}SQL Injection}{59}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}Wstęp teoretyczny}{59}{subsubsection.5.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}Zabezpieczenia}{60}{subsubsection.5.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.3}Zadania}{61}{subsubsection.5.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Cross-Site Scripting (XSS)}{63}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Wstęp teoretyczny}{63}{subsubsection.5.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Zabezpieczenia}{64}{subsubsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Zadania}{65}{subsubsection.5.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Command Injection}{66}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.1}Wstęp teoretyczny}{66}{subsubsection.5.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.2}Zabezpieczenia}{67}{subsubsection.5.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.3}Zadania}{68}{subsubsection.5.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Buffer Overflow (Przepełnienie Buforu)}{70}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.1}Wstęp teoretyczny}{70}{subsubsection.5.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.2}Zabezpieczenia}{71}{subsubsection.5.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.3}Zadania}{72}{subsubsection.5.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Wybrane problemy napotkane w trakcie realizacji projektu}{73}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Problemy komunikacji w zespole}{73}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Tokenizacja z wykorzystaniem Unsloth na systemie Windows}{74}{subsection.6.2}\protected@file@percent }
+\newlabel{ssec:problem_tokenization}{{6.2}{74}{Tokenizacja z wykorzystaniem Unsloth na systemie Windows}{subsection.6.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Długi czas ewaluacji podczas dostosowywania modelu}{74}{subsection.6.3}\protected@file@percent }
+\newlabel{ssec:problem_long_eval}{{6.3}{74}{Długi czas ewaluacji podczas dostosowywania modelu}{subsection.6.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Wyczerpanie pamięci VRAM podczas dostrajania}{74}{subsection.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Sugerowane kierunki dalszego rozwoju}{74}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Backend}{75}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Model LLM}{75}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Wybrana wykorzystana literatura}{75}{section.8}\protected@file@percent }
+\gdef\svg@ink@ver@settings{{\m@ne }{inkscape}{1}}
+\gdef \@abspage@last{76}
