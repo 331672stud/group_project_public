@@ -140,14 +140,33 @@ def get_task(db, task_id, user_id):
     cursor = db.cursor()
     try:
         # Basic task info
-        cursor.execute(
-            """
-            SELECT id, title, description, difficulty, languages
-            FROM tasks
-            WHERE id = %s
-            """,
-            (task_id,)
-        )
+        # determine user role: 0 = student, 1/2 = staff
+        cursor.execute("SELECT user_type FROM users WHERE id = %s", (user_id,))
+        urow = cursor.fetchone()
+        try:
+            user_type = int(urow[0]) if urow and urow[0] is not None else 0
+        except Exception:
+            user_type = 0
+
+   
+        if user_type and user_type > 0:
+            cursor.execute(
+                """
+                SELECT id, title, description, difficulty, languages, COALESCE(answer, NULL), (answer IS NOT NULL) as has_answer
+                FROM tasks
+                WHERE id = %s
+                """,
+                (task_id,)
+            )
+        else:
+            cursor.execute(
+                """
+                SELECT id, title, description, difficulty, languages, NULL as answer, (answer IS NOT NULL) as has_answer
+                FROM tasks
+                WHERE id = %s
+                """,
+                (task_id,)
+            )
         row = cursor.fetchone()
         if not row:
             return None
@@ -158,9 +177,11 @@ def get_task(db, task_id, user_id):
             "description": row[2],
             "difficulty": row[3],
             "languages": row[4],          # list or None
+            "answer": row[5],
+            "has_answer": bool(row[6])
         }
 
-        # Tags (topics)
+      
         cursor.execute(
             """
             SELECT t.name
@@ -173,7 +194,7 @@ def get_task(db, task_id, user_id):
         )
         task["tags"] = [r[0] for r in cursor.fetchall()]
 
-        # Task files (folder tree)
+        
         cursor.execute(
             """
             SELECT file_path, language, content
@@ -188,7 +209,7 @@ def get_task(db, task_id, user_id):
             for r in cursor.fetchall()
         ]
 
-        # User's latest submission (if any)
+      
         cursor.execute(
             """
             SELECT content
@@ -211,10 +232,19 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
     """Zwraca zadanie o danym topicu (tagu) i num, wraz z informacją o statusie dla user_id."""
     cursor = db.cursor()
     try:
-        cursor.execute(
-            """
+        
+        cursor.execute("SELECT user_type FROM users WHERE id = %s", (user_id,))
+        urow = cursor.fetchone()
+        try:
+            user_type = int(urow[0]) if urow and urow[0] is not None else 0
+        except Exception:
+            user_type = 0
+
+        answer_select = "COALESCE(t.answer, NULL)"
+
+        cursor.execute(f"""
             SELECT
-                t.id, t.title, t.description, t.difficulty, t.languages,
+                t.id, t.title, t.description, t.difficulty, t.languages, {answer_select}, (t.answer IS NOT NULL) as has_answer,
                 COALESCE(uts.status, 'new') AS status,
                 uts.last_viewed AS last_viewed,
                 COALESCE(
@@ -242,9 +272,11 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
             "description": row[2],
             "difficulty": row[3],
             "languages": row[4],
-            "status": row[5],
-            "lastViewed": row[6].isoformat() if row[6] else None,
-            "tags": row[7]
+            "answer": row[5],
+            "has_answer": bool(row[6]),
+            "status": row[7],
+            "lastViewed": row[8].isoformat() if row[8] else None,
+            "tags": row[9]
         }
 
         # Task files (folder tree)
@@ -262,7 +294,7 @@ def get_task_by_topic_and_num_db(db, topic, num, user_id):
             for r in cursor.fetchall()
         ]
 
-        # User's latest submission (if any)
+     
         cursor.execute(
             """
             SELECT content

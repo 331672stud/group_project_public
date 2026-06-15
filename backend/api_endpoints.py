@@ -98,6 +98,16 @@ app.add_middleware(
 @app.on_event("startup")
 def startup_event():
     init_pool()
+    # Ensure DB schema has 'answer' column on tasks
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("ALTER TABLE tasks ADD COLUMN IF NOT EXISTS answer TEXT;")
+        conn.commit()
+        cur.close()
+        release_connection(conn)
+    except Exception as e:
+        print('Warning: could not ensure tasks.answer column:', e)
     
 @app.on_event("shutdown")
 def shutdown_event():
@@ -306,6 +316,10 @@ def update_progress(
 class TaskSubmit(BaseModel):
     files: list
 
+
+class AnswerSubmit(BaseModel):
+    answer: str
+
 @protected_router.post("/tasks/{task_id}/submit")
 def submit_task(
         task_id: int,
@@ -317,6 +331,101 @@ def submit_task(
     enqueue_solution_check(conn, submission_id)
     check_submission(conn, submission_id)
     return {"message": f"Submitted solution for task {task_id}", "submission_id": submission_id}
+
+
+@protected_router.post("/tasks/{task_id}/submit_answer")
+def submit_answer(task_id: int, payload: AnswerSubmit, user_id: int = Depends(get_current_user), conn = Depends(get_db)):
+    # retrieve task to get correct answer
+    task = get_task_db(conn, task_id, user_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    # get canonical answer directly from DB so we can validate regardless of requester role
+    cursor = conn.cursor()
+    cursor.execute("SELECT answer FROM tasks WHERE id = %s", (task_id,))
+    row = cursor.fetchone()
+    correct = row[0] if row else None
+    if correct is None:
+        raise HTTPException(status_code=400, detail="Task does not accept answer submissions")
+
+    user_answer = (payload.answer or "").strip()
+
+
+    import re, json as _json
+    def tokenize(s: str):
+        parts = [p.strip() for p in re.split(r"[;,\\s]+", s) if p.strip()]
+        return parts
+
+  
+    stored = correct
+    ordered_flag = False
+    correct_value = None
+    try:
+
+        if isinstance(correct, str):
+            try:
+                parsed = _json.loads(correct)
+            except Exception:
+                parsed = None
+        else:
+            parsed = correct
+
+        if isinstance(parsed, dict) and 'value' in parsed:
+            correct_value = parsed['value']
+            ordered_flag = bool(parsed.get('ordered', False))
+        else:
+            correct_value = correct
+    except Exception:
+        correct_value = correct
+
+    correct_tokens = tokenize(str(correct_value))
+    user_tokens = tokenize(user_answer)
+
+    is_multi = len(correct_tokens) > 1
+
+    if is_multi and ordered_flag:
+        matches = 0
+        for i, t in enumerate(correct_tokens):
+            if i < len(user_tokens) and user_tokens[i].lower() == t.lower():
+                matches += 1
+        score = 100.0 * (matches / len(correct_tokens)) if len(correct_tokens) > 0 else 0.0
+        is_correct = matches == len(correct_tokens)
+        if is_correct:
+            message = 'Poprawna odpowiedź'
+        elif matches == 0:
+            message = 'Niepoprawna odpowiedź'
+        else:
+            message = f'Partially correct ({matches}/{len(correct_tokens)})'
+    elif is_multi:
+        correct_set = set([t.lower() for t in correct_tokens])
+        user_set = set([t.lower() for t in user_tokens])
+        intersection = correct_set.intersection(user_set)
+        score = 0.0
+        if len(correct_set) > 0:
+            score = 100.0 * (len(intersection) / len(correct_set))
+        is_correct = intersection == correct_set
+        if is_correct:
+            message = 'Poprawna odpowiedź'
+        elif len(intersection) == 0:
+            message = 'Niepoprawna odpowiedź'
+        else:
+            message = f'Partially correct ({len(intersection)}/{len(correct_set)})'
+    else:
+        is_correct = user_answer.strip().lower() == str(correct_value).strip().lower()
+        score = 100.0 if is_correct else 0.0
+        message = 'Poprawna odpowiedź' if is_correct else 'Niepoprawna odpowiedź'
+
+
+    submission_id = submit_solution(conn, user_id, task_id, [{"path": "answer", "language": "text", "content": user_answer}])
+
+    cursor = conn.cursor()
+    try:
+        status = 'completed'
+        cursor.execute("INSERT INTO submission_results (submission_id, status, score, message, checked_at) VALUES (%s,%s,%s,%s,NOW())", (submission_id, status, score, message))
+        conn.commit()
+    finally:
+        cursor.close()
+
+    return {"submission_id": submission_id, "correct": is_correct, "message": message, "score": score}
 
 @protected_router.get("/submissions/{submission_id}/result")
 def get_submission_result_endpoint(request: Request, submission_id: int, conn = Depends(get_db)):
