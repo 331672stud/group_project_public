@@ -1,6 +1,16 @@
 import json
 
 def insert_user(db, index, name, surname, user_type):
+    """dodaje użytkownika do bazy
+
+    Args:
+        db (psycopg2): połączenie z bazą danych
+        index (int): numer indeksu użytkownika
+        name (str): Imię użytkownika
+        surname (str): Nazwisko użytkownika
+        user_type (int): Typ użytkownika (0 - student, 1 albo 2 - pracownik)
+    """
+
     cursor = db.cursor()
     cursor.execute("SELECT id FROM users WHERE id = %s", (index,))
     result = cursor.fetchone()
@@ -13,11 +23,11 @@ def get_user_data(db, user_id):
     """zwraca zapisane dane użytkownika
 
     Args:
-        db (_type_): baza
-        user_id (_type_): id użytkownika
+        db (psycopg2): połączenie z bazą danych
+        user_id (int): id użytkownika
 
     Returns:
-        _type_: id, imie nazwisko TYP: 0 - student, 1 albo 2 - pracownik
+        tuple: id, imie nazwisko TYP: 0 - student, 1 albo 2 - pracownik
     """
     cursor = db.cursor()
     cursor.execute("SELECT id, Uname, Usurename, user_type FROM users WHERE id = %s", (user_id,))
@@ -27,23 +37,17 @@ def get_user_data(db, user_id):
 
 def submit_solution(db, user_id, task_id, files):
     """
-    Inserts a multi-file submission (stored as JSONB) and marks the task as 'done'.
+    Zapisuje stan plików przesłanych przez użytkownika jako nowe zgłoszenie (submission) i aktualizuje status w user_task_status na 'in_progress'.
 
     Args:
-        db: psycopg2 connection
-        user_id: int
-        task_id: int
-        files: list of dicts, each with keys "path", "language", "content"
-
-    Example:
-        files = [
-            {"path": "root/index.html", "language": "html", "content": "<!doctype>..."},
-            {"path": "root/src/App.jsx", "language": "javascript", "content": "import..."}
-        ]
+        db (psycopg2): połączenie z bazą danych
+        user_id (int): id użytkownika
+        task_id (int): id zadania
+        files (list): lista słowników z informacjami o plikach, np. [{"path": "root/index.html", "language": "html", "content": "<!doctype>..."}, ...]
     """
     cursor = db.cursor()
     try:
-        # Insert the full files snapshot as JSONB
+        # Snapshot plików jako JSONB
         content_json = json.dumps(files)
         cursor.execute(
             """
@@ -53,13 +57,14 @@ def submit_solution(db, user_id, task_id, files):
             (user_id, task_id, content_json)
         )
         submission_id = cursor.fetchone()[0]
-        # Upsert progress to 'done'
+        
+        # aktualizacja statusu
         cursor.execute(
             """
             INSERT INTO user_task_status (user_id, task_id, status, last_viewed, content)
-            VALUES (%s, %s, 'done', NOW(), %s::jsonb)
+            VALUES (%s, %s, 'in_progress', NOW(), %s::jsonb)
             ON CONFLICT (user_id, task_id) DO UPDATE
-                SET status = 'done', last_viewed = NOW()
+                SET status = 'in_progress', last_viewed = NOW(), content = EXCLUDED.content
             """,
             (user_id, task_id, content_json)
         )
@@ -70,6 +75,14 @@ def submit_solution(db, user_id, task_id, files):
         cursor.close()
 
 def get_all_tasks(db):
+    """zwraca id i tytuły wszystkich zadań
+
+    Args:
+        db (psycopg2): połączenie z bazą danych
+
+    Returns:
+        list: lista krotek (id, title) z id i tytułami zadań
+    """
     cursor = db.cursor()
     cursor.execute("SELECT id, title FROM tasks")
     tasks = cursor.fetchall()
@@ -77,6 +90,15 @@ def get_all_tasks(db):
     return tasks
 
 def get_assigned_tasks(db, user_id):
+    """zwraca przypisane zadania dla użytkownika, wraz z ich id i tytułami
+
+    Args:
+        db (psycopg2): połączenie z bazą danych
+        user_id (int): id użytkownika
+
+    Returns:
+        list: lista krotek (id, title) z id i tytułami przypisanych zadań
+    """    
     cursor = db.cursor()
     cursor.execute("""
         SELECT t.id, t.title 
@@ -89,16 +111,41 @@ def get_assigned_tasks(db, user_id):
     return tasks
 
 def assign_task(db, course_id, task_id, target_id, assigner_id,):
+    """przypisuje użytkownikowi zadanie o konkretnym ID
+
+    Args:
+        db (psycopg2): połączenie z bazą danych
+        course_id (int): id kursu
+        task_id (int): id zadania
+        target_id (int): id użytkownika, któremu przypisujemy zadanie
+        assigner_id (int): id użytkownika, który przypisuje zadanie
+
+
+    Raises:
+        Exception: Tylko właściciel kursu może przypisywać zadania
+
+    Returns:
+        str: komunikat o sukcesie
+    """
     cursor = db.cursor()
     cursor.execute("SELECT id FROM courses WHERE id = %s AND course_owner_id = %s", (course_id, assigner_id))
     if not cursor.fetchone():
-        raise Exception("Only the course owner can assign tasks")
+        raise Exception("Tylko właściciel kursu może przypisywać zadania.")
     cursor.execute("INSERT INTO assigned_tasks (user_id, task_id, assigner_id) VALUES (%s, %s, %s)", (target_id, task_id, assigner_id,))
     db.commit()
     cursor.close()
-    return "Task assigned successfully."
+    return "Zadanie przypisane pomyślnie."
 
 def get_course_tasks(db, course_id):
+    """zwraca zadania dla konkretnego kursu
+
+    Args:
+        db (psycopg2): połączenie z bazą danych
+        course_id (int): id kursu
+
+    Returns:
+        list: lista krotek (id, title) z id i tytułami zadań dla danego kursu
+    """
     cursor = db.cursor()
     cursor.execute("SELECT t.id, t.title FROM tasks t JOIN course_tasks ct ON t.id = ct.task_id WHERE ct.course_id = %s", (course_id,))
     tasks = cursor.fetchall()
@@ -106,6 +153,15 @@ def get_course_tasks(db, course_id):
     return tasks
 
 def filter_by_tags(db, tags):
+    """zwraca zadania z określonym tagiem
+
+    Args:
+        db (psycopg2): połączenie z bazą danych
+        tags (list): lista tagów
+
+    Returns:
+        list: lista krotek (id, title) z id i tytułami zadań dla danego tagu
+    """
     cursor = db.cursor()
     query = "SELECT id, title FROM tasks WHERE "
     query += " OR ".join(["%s = ANY(tags)" for _ in tags])
@@ -115,6 +171,15 @@ def filter_by_tags(db, tags):
     return tasks
 
 def get_submissions(db, user_id):
+    """zwraca wszystkie oddane zadania użytkownika
+
+    Args:
+        db (psycopg2): połączenie z bazą danych
+        user_id (int): id użytkownika
+
+    Returns:
+        list: lista krotek (id, task_id, title) z id, id zadania i tytułem oddanych zadań
+    """
     cursor = db.cursor()
     cursor.execute("SELECT s.id, s.task_id, t.title FROM submissions s JOIN tasks t ON s.task_id = t.id WHERE s.user_id = %s", (user_id,))
     submissions = cursor.fetchall()
@@ -123,24 +188,24 @@ def get_submissions(db, user_id):
 
 def get_task(db, task_id, user_id):
     """
-    Returns a dictionary with:
-        - id, title, description, difficulty, languages
-        - tags: list of tag names
-        - files: list of {path, language, content} (the task template)
-        - submission: user's latest submitted files (or None)
+    Zwraca szczegółowe informacje o zadaniu, w tym:
+        - id, tytuł, opis, trudność, języki
+        - tags: lista tagów
+        - files: lista oryginalnych plików zadania
+        - submission: pliki z ostatniego zgłoszenia jeśli istnieją
 
     Args:
-        db: psycopg2 connection
-        task_id: int
-        user_id: int
+        db (psycopg2): połączenie z bazą danych
+        task_id (int): id zadania
+        user_id (int): id użytkownika
 
     Returns:
-        dict or None if task not found
+        słownik albo nic jeśli nie znajdzie zadania
     """
     cursor = db.cursor()
     try:
-        # Basic task info
-        # determine user role: 0 = student, 1/2 = staff
+        # podstawowe dane o zadaniu
+        # rola użytkownika: 0 = student, 1/2 = pracownik
         cursor.execute("SELECT user_type FROM users WHERE id = %s", (user_id,))
         urow = cursor.fetchone()
         try:
@@ -176,7 +241,7 @@ def get_task(db, task_id, user_id):
             "title": row[1],
             "description": row[2],
             "difficulty": row[3],
-            "languages": row[4],          # list or None
+            "languages": row[4],         
             "answer": row[5],
             "has_answer": bool(row[6])
         }
@@ -221,7 +286,7 @@ def get_task(db, task_id, user_id):
             (user_id, task_id)
         )
         sub = cursor.fetchone()
-        task["submission"] = sub[0] if sub else None   # JSONB, deserialised automatically
+        task["submission"] = sub[0] if sub else None  
 
         return task
 
@@ -229,7 +294,17 @@ def get_task(db, task_id, user_id):
         cursor.close()
 
 def get_task_by_topic_and_num_db(db, topic, num, user_id):
-    """Zwraca zadanie o danym topicu (tagu) i num, wraz z informacją o statusie dla user_id."""
+    """zwraca zadanie na podstawie tematu i numeru w bazie
+
+    Args:
+        db (psycopg2): połączenie z bazą danych
+        topic (str): temat(tag) zadania
+        num (int): numer zadania
+        user_id (int): id użytkownika
+
+    Returns:
+        dict albo nic jeśli nie znajdzie zadania
+    """    
     cursor = db.cursor()
     try:
         

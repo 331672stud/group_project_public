@@ -17,7 +17,8 @@ def _get_client():
 
 def check_submission(db, submission_id: int):
     """
-    Stub funkcji sprawdzającej. Po zakończeniu aktualizuje submission_results.
+    funkcja sprawdzająca. Po zakończeniu aktualizuje submission_results
+    i ustawia status na 'done' jeśli wynik to 100.
     """
     cursor = db.cursor()
     try:
@@ -29,8 +30,8 @@ def check_submission(db, submission_id: int):
         db.commit()
 
         # Pobierz dane zgłoszenia
-        cursor.execute("SELECT task_id, content FROM submissions WHERE id=%s", (submission_id,))
-        task_id, content_json = cursor.fetchone()
+        cursor.execute("SELECT user_id, task_id, content FROM submissions WHERE id=%s", (submission_id,))
+        user_id, task_id, content_json = cursor.fetchone()
         
         client = _get_client()
         
@@ -49,9 +50,9 @@ def check_submission(db, submission_id: int):
                     'raw': result.raw_output
                 })
 
-        # Ustal wynik końcowy
+        #Zapisz wynik
         if vulnerabilities:
-            # Jeśli znaleziono jakąkolwiek podatność – obniżamy score do 0
+            # Jeśli znaleziono błąd - 0
             score = 0.0
             status = "completed"
             vuln_list = ', '.join([f"{v['file']}: {v['label']}" for v in vulnerabilities])
@@ -61,12 +62,37 @@ def check_submission(db, submission_id: int):
             status = "completed"
             message = "Brak wykrytych podatności. Kod jest bezpieczny."
 
+        # Aktualizacja submission_results
         cursor.execute(
             """UPDATE submission_results 
                SET status=%s, score=%s, message=%s, checked_at=NOW() 
                WHERE submission_id=%s""",
             (status, score, message, submission_id)
         )
+        
+        # Aktualizacja user_task_status tylko jeśli score == 100
+        if score == 100.0:
+            cursor.execute(
+                """
+                INSERT INTO user_task_status (user_id, task_id, status, last_viewed, content)
+                VALUES (%s, %s, 'done', NOW(), %s::jsonb)
+                ON CONFLICT (user_id, task_id) DO UPDATE
+                    SET status = 'done', last_viewed = NOW(), content = EXCLUDED.content
+                """,
+                (user_id, task_id, content_json)
+            )
+        else:
+            # Jeśli nie zaliczone, pozostawiamy jako 'in_progress'
+            cursor.execute(
+                """
+                INSERT INTO user_task_status (user_id, task_id, status, last_viewed, content)
+                VALUES (%s, %s, 'in_progress', NOW(), %s::jsonb)
+                ON CONFLICT (user_id, task_id) DO UPDATE
+                    SET last_viewed = NOW(), content = EXCLUDED.content
+                """,
+                (user_id, task_id, content_json)
+            )
+        
         db.commit()
     except Exception as e:
         cursor.execute(
