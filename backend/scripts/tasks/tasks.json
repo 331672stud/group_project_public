@@ -7,7 +7,7 @@
       "python"
     ],
     "description": "Poniższy kod realizuje logowanie użytkownika w aplikacji Python. Wskaż konkretną linijkę, w której występuje podatność SQL Injection. Następnie wyjaśnij, co się stanie, gdy atakujący poda jako login wartość ' OR '1'='1'.",
-    
+    "answer": "6",
     "files": [
       {
         "path": "root/sqli/script1.py",
@@ -38,7 +38,7 @@
       {
         "path": "root/sqli/script3.py",
         "language": "python",
-        "content": "import sqlite3\n\ndef search_users(role):\n    conn = sqlite3.connect('app.db')\n    cur  = conn.cursor()\n    query = \"SELECT name, email FROM users \" \"WHERE role = '\" + role + \"'\"\n    cur.execute(query)\n    return cur.fetchall()"
+        "content": "import sqlite3\n\ndef search_users(role):\n    conn = sqlite3.connect('app.db')\n    cur  = conn.cursor()\n    query = \"SELECT name, email FROM users WHERE role = '\" + role + \"'\"\n    cur.execute(query)\n    return cur.fetchall()"
       }
     ]
   },
@@ -81,7 +81,7 @@
     "languages": [
       "python"
     ],
-    "description": "Poniższy kod zawiera podatność Second-Order SQL Injection - rodzaj ataku, w którym złośliwe dane są najpierw bezpiecznie zapisane do bazy, lecz następnie pobrane i użyte w nowym, niezabezpieczonym zapytaniu. Wyjaśnij mechanizm ataku, zapisz w komentarzu przykład złośliwej nazwy użytkownika umożliwiającej atak i wprowadź poprawkę zabezpieczającą kod.",
+    "description": "Poniższy kod zawiera podatność Second-Order SQL Injection - rodzaj ataku, w którym złośliwe dane są najpierw bezpiecznie zapisane do bazy, lecz następnie pobrane i użyte w nowym, niezabezpieczonym zapytaniu. Wyjaśnij mechanizm ataku, zapisz w komentarzu przykład złośliwej nazwy użytkownika umożliwiającej atak i wprowadź poprawkę zabezpieczającą kod.", 
     "files": [
       {
         "path": "root/sqli/script6.py",
@@ -98,6 +98,7 @@
       "Node.js"
     ],
     "description": "Czy poniższy kod Node.js/Express zawiera podatność XSS? Jeśli tak - wskaż konkretną linię. Jeżeli nie, wpisz NIE. Zastanów się, jaki payload sprawiłby wypisanie alert(1) w przeglądarce ofiary.",
+    "answer": "6",
     "files": [
       {
         "path": "root/xss/script1.js",
@@ -113,7 +114,8 @@
     "languages": [
       "HTML"
     ],
-    "description": "Poniżej podano pięć ciągów znaków. Wskaż po kolei, które z nich mogą pełnić rolę skutecznego payloadu XSS w kontekście strony HTML.",
+    "description": "Poniżej podano pięć ciągów znaków. Wskaż po kolei, które z nich mogą pełnić rolę skutecznego payloadu XSS w kontekście strony HTML. Odpowiedź zapisz w formacie '1, 2, 3, 4, 5, ... M, N'.",
+    "answer": "1, 2, 4",
     "files": [
       {
         "path": "root/xss/script2.txt",
@@ -162,6 +164,7 @@
       "python"
     ],
     "description": "Czy poniższy kod Python zawiera podatność Command Injection? Odpowiedz TAK lub NIE.",
+    "answer": "NIE",
     "files": [
       {
         "path": "root/comi/script1.py",
@@ -177,12 +180,13 @@
     "languages": [
       "python"
     ],
-    "description": "Wskaż podatną linię w poniższym kodzie i wyjaśnij, dlaczego jest niebezpieczna. Zastanów się jak mogły by wyglądać dwa różne przykładowe payloady (używające różnych separatorów poleceń), które pozwoliłyby atakującemu:\n    (a) wyświetlić listę plików w katalogu bieżącym,\n    (b) odczytać plik /etc/hostname.",
+    "description": "Wskaż podatną linię w poniższym kodzie. Zastanów się  dlaczego jest niebezpieczna oraz jak mogły by wyglądać dwa różne przykładowe payloady (używające różnych separatorów poleceń), które pozwoliłyby atakującemu:\n    (a) wyświetlić listę plików w katalogu bieżącym,\n    (b) odczytać plik /etc/hostname.",
+    "answer": "8",
     "files": [
       {
         "path": "root/comi/script2.py",
         "language": "python",
-        "content": "import os\nfrom flask import request\n\n@app.route('/convert')\ndef convert():\n    filename = request.args.get('file', '')\n    os.system(\n        f\"convert {filename} -resize 200x200 thumb.jpg\"\n    )\n    return \"Gotowe\""
+        "content": "import os\nfrom flask import request\n\n@app.route('/convert')\ndef convert():\n    filename = request.args.get('file', '')\n\n    os.system(f\"convert {filename} -resize 200x200 thumb.jpg\")\n\n    return \"Gotowe\""
       }
     ]
   },
@@ -225,7 +229,8 @@
     "languages": [
       "C"
     ],
-    "description": "Wskaż wszystkie linie z niebezpiecznym wywołania funkcji w poniższym kodzie C. Dla każdego z nich:\n  (a) przypomnij sobie, dlaczego jest niebezpieczne i co może spowodować atak przepełnienia buforu.",
+    "description": "Wskaż wszystkie linie z niebezpiecznym wywołania funkcji w poniższym kodzie C. Format odpowiedzi: '1, 2, ..., 3, 4'.\nDla każdego z nich przypomnij sobie, dlaczego jest niebezpieczne i co może spowodować atak przepełnienia buforu.",
+    "answer": "6, 12",
     "files": [
       {
         "path": "root/buffer/script1.c",
@@ -246,7 +251,7 @@
       {
         "path": "root/buffer/script2.c",
         "language": "C",
-        "content": ""
+        "content": "#include <stdio.h>\n#include <string.h>\n\nvoid process(char *input) {\nchar buf[64];\nstrcpy(buf, input);\nprintf(buf); \n}\n\nint main() {\n     char data[256];\n     gets(data); \n     process(data);\n     return 0;\n }"
       }
     ]
   },
@@ -254,7 +259,17 @@
     "topic": "Buffer Overflow",
     "num": 3,
     "difficulty": "medium",
-    "description": "Przeanalizuj poniższy układ stosu dla\n    funkcji vulnerable() i opisz krok po kroku atak\n    Stack-based Buffer Overflow:\n    \n[ wyzsze adresy pamiec ]\n+----------------------+\n|  buf[64]             |  <-- bufor lokalny (64 bajty)\n+----------------------+\n|  zachowany EBP (4B)  |\n+----------------------+\n|  adres powrotu       |  <-- cel nadpisania (RET)\n+----------------------+\n[ nizsze adresy pamieci ]\n     Odpowiedz sobie na pytania:\n         -Co się dzieje, gdy wpisujemy dokładnie 64 bajty?\n        -Co się dzieje, gdy wpisujemy 72 bajty?\n        -Co umożliwia wpisanie więcej niż 72 bajtów zawierających adres kontrolowany przez atakującego?"
+    "languages": [
+      "C"
+    ],
+    "description": "Poniższy kod C zawiera podatność Buffer Overflow. Popraw go, stosując strncpy z właściwą długością i ręcznym zerowaniem bajtu terminatora. Zwróć szczególną uwagę na układ zmiennych na stosie: wyjaśnij sobie, co mogłoby się stać z wartością zmiennej authenticated, gdyby atakujący podał hasło dłuższe niż 16 znaków.",
+    "files": [
+      {
+        "path": "root/buffer/script4.c",
+        "language": "C",
+        "content": "#include <stdio.h>\n#include <string.h>\n \nvoid authenticate(char *input_pass) {\n    int  authenticated = 0;\n    char stored[16]    = \"tajne123\";\n    char input[16];\n \n    strcpy(input, input_pass);\n \n    if (strcmp(input, stored) == 0)\n        authenticated = 1;\n \n    if (authenticated)\n        printf(\"Dostep przyznany!\\n\");\n    else\n        printf(\"Bledne haslo.\\n\");\n}"
+      }
+    ]
   },
   {
     "topic": "Buffer Overflow",
@@ -263,12 +278,12 @@
     "languages": [
       "C"
     ],
-    "description": "Poniższy kod C zawiera podatność\n    Buffer Overflow. Popraw go, stosując strncpy\n    z właściwą długością i ręcznym zerowaniem bajtu terminatora.\n    Zwróć szczególną uwagę na układ zmiennych na stosie: wyjaśnij,\n    co mogłoby się stać z wartością zmiennej authenticated,\n    gdyby atakujący podał hasło dłuższe niż 16 znaków.",
+    "description": "Poniższy kod C zawiera podatność Buffer Overflow. Popraw go, stosując funkcję fgets z właściwą długością i ręcznym zerowaniem bajtu terminatora.",
     "files": [
       {
         "path": "root/buffer/script4.c",
         "language": "C",
-        "content": "#include <stdio.h>\n#include <string.h>\n \nvoid authenticate(char *input_pass) {\n    int  authenticated = 0;\n    char stored[16]    = \"tajne123\";\n    char input[16];\n \n    strcpy(input, input_pass);\n \n    if (strcmp(input, stored) == 0)\n        authenticated = 1;\n \n    if (authenticated)\n        printf(\"Dostep przyznany!\\n\");\n    else\n        printf(\"Bledne haslo.\\n\");\n}"
+        "content": "#include <stdio.h>\n#include <string.h>\n\nvoid check_access() {\n    char buf[16];\n    int isAdmin = 0;\n\n    printf(\"Enter your name: \");\n    gets(buf);\n\n    if (isAdmin) {\n        printf(\"Access granted: welcome, admin!\");\n    } else {\n        printf(\"Access denied.\");\n    }\n}\n\nint main() {\n    check_access();\n    return 0;\n}"
       }
     ]
   },

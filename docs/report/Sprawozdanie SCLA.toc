@@ -1,0 +1,105 @@
+\babel@toc {polish}{}\relax 
+\contentsline {section}{\numberline {1}Wstęp}{4}{section.1}%
+\contentsline {section}{\numberline {2}Backend systemu}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Architektura systemu}{4}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.1}Opis serwisów}{4}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}Wolumeny i trwałość danych}{5}{subsubsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.1.3}Struktura katalogów - ogólny zarys}{6}{subsubsection.2.1.3}%
+\contentsline {subsubsection}{\numberline {2.1.4}Testy i spostrzeżenia}{6}{subsubsection.2.1.4}%
+\contentsline {subsection}{\numberline {2.2}Struktura bazy danych}{7}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Konfiguracja serwera Nginx jako odwrotnego proxy}{8}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Architektura}{8}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Rate limiting}{9}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}Terminacja SSL i certyfikat samopodpisany}{9}{subsubsection.2.3.3}%
+\contentsline {subsubsection}{\numberline {2.3.4}Nagłówki bezpieczeństwa HTTP}{10}{subsubsection.2.3.4}%
+\contentsline {subsubsection}{\numberline {2.3.5}Testy, spostrzeżenia i wnioski}{11}{subsubsection.2.3.5}%
+\contentsline {subsection}{\numberline {2.4}Interfejs REST API}{11}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}Endpointy publiczne}{12}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {2.4.2}Endpointy chronione (wymagają zalogowania)}{12}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.4.3}Metody przeznaczone stricte dla prowadzących zajęć}{15}{subsubsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.5}Integracja z USOS}{15}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Pooling połączeń}{15}{subsection.2.6}%
+\contentsline {subsubsection}{\numberline {2.6.1}Zarządzanie połączeniami z bazą danych i automatyczne inicjowanie zadań}{15}{subsubsection.2.6.1}%
+\contentsline {subsubsection}{\numberline {2.6.2}Automatyczne ładowanie zadań}{16}{subsubsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.7}Bezpieczeństwo}{16}{subsection.2.7}%
+\contentsline {subsection}{\numberline {2.8}Podsumowanie}{16}{subsection.2.8}%
+\contentsline {section}{\numberline {3}Frontend systemu}{17}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Wstęp}{17}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Ustalony plan prac}{17}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Stos technologiczny}{17}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Projekt interfejsu graficznego}{17}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Podstawowe zasoby}{17}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Atomy}{18}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}Molekuły}{20}{subsubsection.3.4.3}%
+\contentsline {subsubsection}{\numberline {3.4.4}Organizmy}{24}{subsubsection.3.4.4}%
+\contentsline {subsubsection}{\numberline {3.4.5}Widoki}{27}{subsubsection.3.4.5}%
+\contentsline {subsubsection}{\numberline {3.4.6}Niewykorzystane elementy}{29}{subsubsection.3.4.6}%
+\contentsline {subsection}{\numberline {3.5}Szczegóły implementacyjne}{31}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Struktura projektu}{31}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}Pełne drzewo projektu}{31}{subsubsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.3}Komponenty}{33}{subsubsection.3.5.3}%
+\contentsline {subsubsection}{\numberline {3.5.4}Strony}{33}{subsubsection.3.5.4}%
+\contentsline {subsubsection}{\numberline {3.5.5}Routing}{34}{subsubsection.3.5.5}%
+\contentsline {subsubsection}{\numberline {3.5.6}Style aplikacji}{34}{subsubsection.3.5.6}%
+\contentsline {subsection}{\numberline {3.6}Widoki aplikacji}{34}{subsection.3.6}%
+\contentsline {subsubsection}{\numberline {3.6.1}Widok logowania}{34}{subsubsection.3.6.1}%
+\contentsline {subsubsection}{\numberline {3.6.2}Widok listy tematów}{36}{subsubsection.3.6.2}%
+\contentsline {subsubsection}{\numberline {3.6.3}Widok teorii w kontekście tematu}{37}{subsubsection.3.6.3}%
+\contentsline {subsubsection}{\numberline {3.6.4}Widok listy zadań w kontekście tematu}{38}{subsubsection.3.6.4}%
+\contentsline {subsubsection}{\numberline {3.6.5}Widok kodowania}{41}{subsubsection.3.6.5}%
+\contentsline {subsubsection}{\numberline {3.6.6}Integracja z API Backendowym}{42}{subsubsection.3.6.6}%
+\contentsline {subsubsection}{\numberline {3.6.7}Zarządzanie stanem środowiska}{42}{subsubsection.3.6.7}%
+\contentsline {subsubsection}{\numberline {3.6.8}Obsługa interakcji Drag and Drop}{42}{subsubsection.3.6.8}%
+\contentsline {subsection}{\numberline {3.7}Podsumowanie i wnioski}{43}{subsection.3.7}%
+\contentsline {section}{\numberline {4}Model LLM - SCLA\_ML\_vuln\_detector}{45}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Wstęp}{45}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Stos technologiczny}{45}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Zbiór Danych}{46}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Źródło danych - Vulnerability fix dataset}{46}{subsubsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.4}Architektura Modelu}{48}{subsection.4.4}%
+\contentsline {subsubsection}{\numberline {4.4.1}Wybór modelu bazowego}{48}{subsubsection.4.4.1}%
+\contentsline {subsubsection}{\numberline {4.4.2}Kwantyzacja modelu}{48}{subsubsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.5}Dostrajanie parametryczne - PEFT}{48}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Potok Treningowy}{50}{subsection.4.6}%
+\contentsline {subsubsection}{\numberline {4.6.1}Wstępna tokenizacja danych}{50}{subsubsection.4.6.1}%
+\contentsline {subsubsection}{\numberline {4.6.2}Konfiguracja treningu}{51}{subsubsection.4.6.2}%
+\contentsline {subsubsection}{\numberline {4.6.3}Długość sekwencji}{53}{subsubsection.4.6.3}%
+\contentsline {subsubsection}{\numberline {4.6.4}Czas i przebieg treningu}{53}{subsubsection.4.6.4}%
+\contentsline {subsection}{\numberline {4.7}Eksport wyuczonego modelu}{53}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.8}Ewaluacja Modelu}{54}{subsection.4.8}%
+\contentsline {subsubsection}{\numberline {4.8.1}Procedura testowania}{54}{subsubsection.4.8.1}%
+\contentsline {subsubsection}{\numberline {4.8.2}Wyniki}{54}{subsubsection.4.8.2}%
+\contentsline {subsubsection}{\numberline {4.8.3}Ocena wyników}{55}{subsubsection.4.8.3}%
+\contentsline {subsection}{\numberline {4.9}Konfiguracja serwera Ollama}{56}{subsection.4.9}%
+\contentsline {subsection}{\numberline {4.10}Konteneryzacja w środowisku Docker}{57}{subsection.4.10}%
+\contentsline {subsection}{\numberline {4.11}Opóźnienie inferencji}{57}{subsection.4.11}%
+\contentsline {subsection}{\numberline {4.12}Klient API w Języku Python}{57}{subsection.4.12}%
+\contentsline {subsubsection}{\numberline {4.12.1}Kluczowe funkcjonalności}{57}{subsubsection.4.12.1}%
+\contentsline {subsubsection}{\numberline {4.12.2}Formatowanie promptów}{58}{subsubsection.4.12.2}%
+\contentsline {subsection}{\numberline {4.13}Podsumowanie}{58}{subsection.4.13}%
+\contentsline {section}{\numberline {5}Teksty teoretyczne i przykładowe zadania}{59}{section.5}%
+\contentsline {subsection}{\numberline {5.1}SQL Injection}{59}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Wstęp teoretyczny}{59}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Zabezpieczenia}{60}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}Zadania}{61}{subsubsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.2}Cross-Site Scripting (XSS)}{63}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Wstęp teoretyczny}{63}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Zabezpieczenia}{64}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Zadania}{65}{subsubsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.3}Command Injection}{66}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Wstęp teoretyczny}{66}{subsubsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.2}Zabezpieczenia}{67}{subsubsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.3}Zadania}{68}{subsubsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.4}Buffer Overflow (Przepełnienie Buforu)}{70}{subsection.5.4}%
+\contentsline {subsubsection}{\numberline {5.4.1}Wstęp teoretyczny}{70}{subsubsection.5.4.1}%
+\contentsline {subsubsection}{\numberline {5.4.2}Zabezpieczenia}{71}{subsubsection.5.4.2}%
+\contentsline {subsubsection}{\numberline {5.4.3}Zadania}{72}{subsubsection.5.4.3}%
+\contentsline {section}{\numberline {6}Wybrane problemy napotkane w trakcie realizacji projektu}{73}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Problemy komunikacji w zespole}{73}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Tokenizacja z wykorzystaniem Unsloth na systemie Windows}{74}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Długi czas ewaluacji podczas dostosowywania modelu}{74}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Wyczerpanie pamięci VRAM podczas dostrajania}{74}{subsection.6.4}%
+\contentsline {section}{\numberline {7}Sugerowane kierunki dalszego rozwoju}{74}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Backend}{75}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Model LLM}{75}{subsection.7.2}%
+\contentsline {section}{\numberline {8}Wybrana wykorzystana literatura}{75}{section.8}%
