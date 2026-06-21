@@ -390,9 +390,9 @@ def submit_answer(task_id: int, payload: AnswerSubmit, user_id: int = Depends(ge
         score = 100.0 * (matches / len(correct_tokens)) if len(correct_tokens) > 0 else 0.0
         is_correct = matches == len(correct_tokens)
         if is_correct:
-            message = 'Correct'
+            message = 'Poprawna odpowiedź'
         elif matches == 0:
-            message = 'Incorrect'
+            message = 'Niepoprawna odpowiedź'
         else:
             message = f'Partially correct ({matches}/{len(correct_tokens)})'
     elif is_multi:
@@ -404,15 +404,15 @@ def submit_answer(task_id: int, payload: AnswerSubmit, user_id: int = Depends(ge
             score = 100.0 * (len(intersection) / len(correct_set))
         is_correct = intersection == correct_set
         if is_correct:
-            message = 'Correct'
+            message = 'Poprawna odpowiedź'
         elif len(intersection) == 0:
-            message = 'Incorrect'
+            message = 'Niepoprawna odpowiedź'
         else:
             message = f'Partially correct ({len(intersection)}/{len(correct_set)})'
     else:
         is_correct = user_answer.strip().lower() == str(correct_value).strip().lower()
         score = 100.0 if is_correct else 0.0
-        message = 'Correct' if is_correct else 'Incorrect'
+        message = 'Poprawna odpowiedź' if is_correct else 'Niepoprawna odpowiedź'
 
 
     submission_id = submit_solution(conn, user_id, task_id, [{"path": "answer", "language": "text", "content": user_answer}])

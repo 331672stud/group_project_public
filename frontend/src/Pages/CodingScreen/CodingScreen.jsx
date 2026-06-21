@@ -37,7 +37,29 @@ export function CodingScreen() {
             .then(task => {
                 setTask(task)
                 setFiles(task['files'])
-                setTree(makeTree(task['files']))
+                const built = makeTree(task['files'])
+                setTree(built)
+                // auto-expand folders and open first file
+                try {
+                    const keys = Object.keys(built)
+                    const firstFile = keys.find(k => !built[k].isFolder)
+                    if (firstFile) {
+                        // compute parent folders to expand (e.g., 'root', 'root/src')
+                        const parts = firstFile.split('/')
+                        const parents = []
+                        for (let i = 1; i < parts.length; i++) {
+                            parents.push(parts.slice(0, i).join('/'))
+                        }
+                        setExpandedItems(parents)
+                        setTabs([built[firstFile]])
+                        setSingleTab(null)
+                        setFileName(firstFile.toString())
+                        setFocusedItem(firstFile)
+                        setSelectedItems([firstFile])
+                    }
+                } catch (e) {
+                    console.error('Auto-open file failed', e)
+                }
                 return task
             })
             .then(task => {
