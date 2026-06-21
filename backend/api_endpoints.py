@@ -98,7 +98,6 @@ app.add_middleware(
 @app.on_event("startup")
 def startup_event():
     init_pool()
-    # Ensure DB schema has 'answer' column on tasks
     try:
         conn = get_connection()
         cur = conn.cursor()
@@ -164,7 +163,6 @@ async def callback(
     request.session["user_id"] = user_data["id"]
     insert_user(conn, user_data["id"], user_data["first_name"], user_data["last_name"], user_data["staff_status"])
 
-    # return {"login successful, user_id": user_data["id"]}
     return RedirectResponse(FRONTEND_URL)
 
 @app.get("/public-tasks")
@@ -335,11 +333,9 @@ def submit_task(
 
 @protected_router.post("/tasks/{task_id}/submit_answer")
 def submit_answer(task_id: int, payload: AnswerSubmit, user_id: int = Depends(get_current_user), conn = Depends(get_db)):
-    # retrieve task to get correct answer
     task = get_task_db(conn, task_id, user_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    # get canonical answer directly from DB so we can validate regardless of requester role
     cursor = conn.cursor()
     cursor.execute("SELECT answer FROM tasks WHERE id = %s", (task_id,))
     row = cursor.fetchone()
