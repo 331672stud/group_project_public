@@ -30,7 +30,7 @@ function TopBar({topic, small, theory=false}) {
                     <Label text={user["first name"] + " " + user["last name"]} size={'small'}/>
                     <IconComponent Icon={UserRound} className={styles.icon}/>
                     <IconComponent Icon={Settings} className={styles.icon}/>
-                    <button onClick={logout}>Logout</button>
+                    <button onClick={logout}>Wyloguj</button>
                 </div>
             </div>
             {topic != null ? (<div className={styles.underBar}>

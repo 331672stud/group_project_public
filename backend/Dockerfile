@@ -11,6 +11,8 @@ RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
+RUN ls /
+
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["gunicorn", "api_endpoints:app", \
     "--worker-class", "uvicorn.workers.UvicornWorker", \

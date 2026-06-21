@@ -27,7 +27,7 @@ export default function ProtectedLayout() {
     }, [])
 
     if(loading) {
-        return <div>Loading...</div>
+        return <div>Ładowanie...</div>
     }
 
     if (user === null) {

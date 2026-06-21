@@ -156,17 +156,6 @@
     {\thesubsubsection}{1em}{}
 
 
-\hypersetup{
-    colorlinks=true,
-    linkcolor=primary,
-    urlcolor=accent,
-    citecolor=primary,
-    pdftitle={SCLA\_ML\_vuln\_detector --- Raport Techniczny},
-    pdfauthor={Projekt SCLA\_ML},
-    pdfsubject={Dostrajanie modelu LLM do wykrywania podatnosci w cyberbezpieczenstwie}
-}
-
-
 
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{backcolour},   
@@ -188,8 +177,6 @@
 }
 \lstset{style=mystyle}
 
-\title{\textbf{Backend}}
-\author{}
 
 \begin{document}
 
@@ -235,6 +222,123 @@ Główny podział aplikacji wygląda następująco:
     \item \textbf{Model LLM} - proces uczenia LLM, wybrane parametry, efektywność i ocena ostatecznego modelu;
     \item \textbf{Teksty teoretyczne i przykładowe zadania} - zbiór pojęć, wstępów teoretycznych oraz zadań, które zostały stworzone w celu nauki poprzez aplikację. 
 \end{itemize}
+
+\subsection{Opis podział zadań między członkami}
+\label{ssec:task_division}
+\subsubsection*{Damian Ciaszczyk}
+ 
+\begin{enumerate}
+    \item Integracja backend'u z LLM - zrealizowana przez wrapper dla biblioteki pozwalającej się komunikować z LLM'em, z relatywnie prostą metodą zmiany gdzie kod do weryfikacji jest wysyłany;
+    \item Stworzenie i połączenie bazy danych - zrealizowane przez kontener postgreSQL i połączenie z nim przez endpointy REST API, przechowujący zadania jak i resztę danych potrzebnych do operowania aplikacji;
+    \item Śledzenie postępu różnych użytkowników - zrealizowane przez tabele submissions oraz user\_task\_status;
+    \item Obsługa wielu użytkowników - zrealizowana przez pooling połączeń do bazy oraz workersów Gunicorn;
+    \item Napisanie endpoint'ów wymaganych do sprawnego działania aplikacji;
+    \item Napisanie skryptów testowych uzupełniających bazę przykładowymi zadaniami do przetestowania odpowiednich powiązanych z wymienionymi wyżej endpoint'ami.
+\end{enumerate}
+
+\subsubsection*{Bartłomiej Ciupak}
+\begin{enumerate}
+    \item Znalezienie faktycznego, oraz próba stworzenia syntetycznego zbioru danych do uczenia LLM;
+    \item Wsparcie w implementacji backend'u w końcowym etapie projektu.
+\end{enumerate}
+
+\subsubsection*{Jakub Haraszkiewicz}
+\begin{enumerate}
+    \item Stworzenie makiet frontend'u, w tym: widoku głównego, widoku postępu wypełnienia zadań, widoku edytora tekstu, strony wstępnej, widoku wstępu teoretycznego;
+    \item Implementacja struktury komponentów interfejsu graficznego na podstawie określonych makiet;
+    \item Implementacja edytora tekstowego na potrzeby zadań;
+    \item Integracja frontend'u z warstwą backend'u; 
+    \item Testy integracyjne systemu.
+\end{enumerate}
+
+\subsubsection*{Jan Machowski}
+\begin{enumerate}
+    \item Wyszukanie możliwości stworzenia oraz implementacji LLM;
+    \item Proces czyszczenia i transformacji danych do uczenia LLM;
+    \item Uczenie / dostosowanie LLM do potrzeby detekcji podatności w kodzie;
+    \item Testy i walidacja działania modelu.
+\end{enumerate}
+
+\subsubsection*{Karolina Wiśniewska}
+\begin{enumerate}
+    \item Dobór, definicja i podział tematów uczenia;
+    \item Stworzenie wstępów teoretycznych oraz zadań na potrzeby aplikacji.
+\end{enumerate}
+\subsection{Opis przebiegu prac i wykorzystywanych narzędzi do pracy zespołowej}
+
+W ramach realizacji projektu, wykorzystano następujące narzędzia do pracy:
+\begin{itemize}
+    \item \textbf{Messenger} - komunikator tekstowy, na którym została stworzona grupa zawierająca wszystkich członków zespołu. Była ona pierwszym punktem spotkania, oraz miejscem wymiany informacji w okresie intensywnej pracy nad systemem;
+    \item \textbf{Microsoft Teams} - komunikator, na którym odbyły się wstępne spotkania ustalające zakres prac;
+    \item \textbf{GitHub} - narzędzie wykorzystywane do przechowywania i udostępniania kodu, wybrana ze względu na dostępność oraz popularność;
+    \item \textbf{GitHub Projects} - narzędzie zarządzania projektami w GitHub, na którym została stworzona tablica dla projektu zespołowego;
+    \item \textbf{MS Word, VS Code, IDE} - edytory tekstu wykorzystane do pisania kodu, notatek oraz sprawozdania.
+\end{itemize}
+
+Poniżej znajduje się wypowiedzi poszczególnych członków zespołu na temat przebiegu prac w ich zakresach:
+
+\subsubsection*{Damian Ciaszczyk}
+
+Po ustaleniach co do podziału prac 28/10/2025 oraz ustaleniu konkretnych rozwiązań które planuję wykorzystać (PostgreSQL dla bazy danych, FastAPI dla endpointów), faktyczne prace nad projektem rozpocząłem w okolicach lutego 2026. Wpierw zacząłem zastanawiać się nad odpowiednią metodą do autentykacji użytkowników, gdzie doszedłem do wniosku że ze względu na tematykę okoliczną studiom najlepszym rozwiązaniem będzie wykorzystanie API USOS. 
+
+Ze względu na to, że pierwszy raz pisałem autentykację OAuth, do 25 marca pracowałem nad szkieletem backendu głównie sam, okazjonalnie komunikując się głównie z Jakubem odpowiadającym za Frontend, aby wiedział że logowanie chcę zrobić np. właśnie po API USOS. Dnia 25 marca uznałem że postęp nad backendem był wystarczający aby pokazać go innym członkom zespołu, więc wrzuciłem to co miałem do tej pory przygotowane do repozytorium: logowanie za pomocą USOS, początkowy szkielet bazy z luźną strukturą przechowywania plików, niedopracowanym połączeniem z samą bazą, stubami endpointów \texttt{profile}, \texttt{tasks}, \texttt{submissions} oraz \texttt{tasks/task\_id}, zwracającymi tylko informację jaki to endpoint. Nie udostępniłem tego repozytorium wszystkim członkom ze względu na to, że integrację z tą częścią potrzebował głównie frontend. Mniej więcej w tym czasie zaprosiłem do kolaboracji nad repozytorium Jakuba, aby widział do czego mniej więcej ma przygotować swój frontend, jak i Bartłomieja Ciupaka, chociaż ostatecznie zaczął pracować nad repozytorium w czerwcu.
+
+Przez następne 3 miesiące okazjonalnie wprowadzałem zmiany do repozytorium. Warto wspomnieć, że Kuba pomógł mi dodać CORS middleware oraz odpowiednie dla frontendu przekierowanie 1 kwietnia. Pod koniec maja zaczęła się intensywna praca nad integracją przygotowanego przeze mnie API do frontendu który przygotował Kuba, która była trudniejsza niż musiała być ze względu na to, że chciałem dodać kilka swoich pomysłów bez przedyskutowania ich, odbiegając trochę od ustalonej przeze mnie i Kuby wizji systemu. 
+
+Całkowita asymilacja repozytoriów frontendu, backendu i modelu LLM nastąpiła na początku czerwca, celem zebrania całej dotychczasowej pracy w jednym miejscu i ułatwienia integracji między nimi. To był także moment gdy wszyscy członkowie zespołu dołączyli do kolaboratorów w repozytorium. Wtedy też powstała integracja sprawdzania zadań z modelem LLM, jak i pełne dostosowanie wykorzystywanych i oczekiwanych endpointów do potrzeb frontendu. Mniej więcej wtedy też zaczęło się dostosywanie metod dodania zadań do aplikacji w sposób pasujący do dostarczonych zadań, chociaż nie obyło się to bez problemów. 
+
+Po za współpracą nad repozytorium na Github, przez cały okres pracy nad backend'em komunikowałem się osobiście jak i na platformie Messenger z Kubą, z dwa razy wspomniałem Bartoszowi o postępach oraz raz Karolinie w maju, oraz od 25 maja panowała intensywna komunikacja między członkami zespołu na temat wykonywanych prac na Messengerze.
+
+\subsubsection*{Bartłomiej Ciupak}
+W maju miałem istotny wkład w tworzenie projektu w postaci wyszukania zbioru danych na potrzeby uczenia LLM. Wpierw chciałem stworzyć dane syntetyczne, ale po krótkim zastanowieniu postanowiłem poszukać w internecie przykładów i znalazłem ostateczny zbiór. Dodatkowo, w czerwcu starałem się pomóc zespołowi w tym, o co byłem poproszony, m.in. w integracji niektórych zadań w systemie. 
+
+\subsubsection*{Jakub Haraszkiewicz}
+Pracę nad frontend'em rozpocząłem w listopadzie od stworzenia makiet projektu w Figma, żeby mieć jednolitą wizję tego jak system ma wyglądać. Następnie przeszedłem do implementacji, zaczynając od widgetów tematów i ikon zadania. W grudniu rozszerzyłem frontend o ekran tematów i zadań oraz połączyłem ze sobą istniejące dotrychczas ekrany. 
+
+W styczniu pracowałem nad funkcjonalnością ekranu kodowania - wprowadziłem do aplikacji ekranu zadań wykorzystanie edytora Monaco, zaimplementowałem wstępną wersję drzewa plików, co rozwinąłem w lutym poprzez dodanie drzewka i jego obsługi do lewego panelu ekranu. Panel ten wykorzystałem również z prawej strony w celu wyświetlenia instrukcji danego zadania.
+
+W marcu rozpocząłem proces tworzenia ekranu logowania, poprzez zaimplementowanie wizji z zamodelowanych makiet, lecz dopiero w maju dokończyłem integrację tego ekranu z CAS USOS aby móc w pełni wykorzystać pomysł z uwierzytelnianiem przez uczelnianą platformę. Na przestrzeni kwietnia, maja oraz czerwca skupiłem się również na integracji frontend'u i backend'u, zezwalanie backend'owi na dostęp do frontend'u, w tym do pobierania zadań. Na początku czerwca, po otrzymaniu odpowiednich plików ze wstępami teoretycznymi, byłem w stanie dokończyć ich wyświetlanie w dedykowanym ekranie. 
+
+\subsubsection*{Jan Machowski}
+Według wstępnych założeń, które uzgodniliśmy w październiku, miałem zająć się częścią teoretyczną. Niestety, pracę nad projektem zacząłem bardzo późno i na inny temat, który został do zrobienia - ostatecznie zająłem się uczeniem modelu LLM. Wpierw, na początku maja, zacząłem własny research dotyczący metod przystosowania LLM do potrzeb projektowych na podstawie oryginalnych informacji od Karoliny. Proces uczenia rozpocząłem w połowie maja, gdy stworzyłem potok transformacji danych dla zbioru otrzymanego od Bartłomieja oraz stworzyłem skrypt w Python do uczenia modelu.
+
+Podjąłem łącznie 3 próby dostosowania oraz walidacji modelu, z czego ostatnia (a zarazem jedyna w pełni ukończona) trwała ok. 25 godzin czystych obliczeń na karcie graficznej. Od razu po dostrojeniu modelu zająłem się weryfikacją jego działania na próbie testowej, co również się udało. W czerwcu zająłem się wystawianiem oraz konteneryzowaniem modelu LLM napisaniem klienta dostępu dla ułatwienia komunikacji oraz przekazałem Damianowi kod w celach integracji z backend'em. Od momentu przekazania tych elementów, poza komunikacją i lekkim wspomaganiem w integracji, skupiłem się na redakcji niniejszego raportu na podstawie informacji od poszczególnych członków zespołu.
+
+
+\subsubsection*{Karolina Wiśniewska}
+Po wstępnych spotkaniach w październiku, przystąpiłam do rozeznania się i przekazania osobom od LLM informacji w temacie dostrajania modeli do specyficznych zadań - w tym wstępne założenia, proponowane modele. Następnie, pracę kontynuowaną podjęłam w maju - wówczas zebrałam tematy do adaptacji, informację którą również przekazałam do Jana. Wstępy teoretyczne i przykładowe zadania do bazy zostały przygotowane nieco później, na początku czerwca. Ze względu na ograniczony czas, selekcja tematów była dokonana (w przeważającej mierze) na podstawie materiałów z przedmiotu Ochrona Danych w Systemach Informacyjnych. Na podstawie wzoru podanego przez Jakuba Haraszkiewicza, utworzyłam utworzony plik z zadaniami, który przekazałam do dalszej obróbki.
+
+
+\subsection{Specyfikacja wymagań systemu}
+Aplikacja \texttt{Safe Coding Learning App} jest aplikacją do interaktywnego uczenia się znanych, istniejących podatności w cyberbezpieczeństwie. W założeniu, jest to aplikacja web'owa z możliwością stworzenia konta / logowania za pomocą zaufanego źródła, która ułatwia praktykę pisania bezpiecznego kodu za pomocą zadań sprawdzanych przez odpowiednio dostosowany model uczenia maszynowego.
+
+Poniżej znajduje się spis głównych wymagań systemu:
+\begin{enumerate}
+    \item \textbf{Użytkownicy i logowanie} - system ma umożliwić logowanie poszczególnych użytkowników, tj. studentów, na ich indywidualne konta;
+    \item \textbf{Przekazywanie treści oraz zadania} - w systemie mają znaleźć się potrzebne opisy teoretyczne podatności kodu, których uczniowie będą się uczyć. W to wchodzi wstęp teoretyczny objaśniający podatność, możliwości jej zapobiegnięcia oraz przykłady kodu. Do tego, w systemie mają znaleźć się zadania pozwalające na utrwalenie zdobytej wiedzy - główny typ zadania, który ma wystąpić w systemie, to napisanie bezpiecznego, lub zmodyfikowanie podatnego kodu tak, aby pozbyć się wrażliwości;
+    \item \textbf{Model LLM do detekcji wrażliwości} - system ma mieć zintegrowany model LLM, dostosowany specjalnie do zadania wykrywania określonych podatności w kodzie źródłowym. W założeniu, w zadaniach na napisanie / modyfikację kodu, model LLM jest wykorzystywany do automatycznego sprawdzenia występowania podatności w kodzie;
+    \item \textbf{Skalowalność} - system ma mieć możliwość rozwoju tematyk, zarówno w przypadku treści teoretycznych, zadań oraz sprawdzania odpowiedzi przez model LLM;  
+    \item \textbf{Bezpieczeństwo} - system ma być bezpieczny na znane podatności aplikacji webowych;
+    \item \textbf{Niezawodność} - system ma być dostępny dla użytkowników, zapisywać ich postęp w wykonaniu zadań oraz działać w przewidywalny, poprawny sposób.
+\end{enumerate} 
+
+\subsection{Opis narzędzi GenAI oraz ich wykorzystanie w projekcie}
+
+Ponownie, niniejsza sekcja zostanie podzielona na wypowiedzi członków zespołu, analogicznie do sekcji \ref{ssec:task_division}, w celu ujęcia pełnego obrazu wykorzystania narzędzi GenAI przez każdego z członków: 
+
+\subsubsection*{Damian Ciaszczyk}
+Gdy postępowały powolne prace w okresie luty-maj, korzystałem wyłącznie z autouzupełniania linijek które i tak potrzebowało dużo zmian, aby wykonywało prawidłowe zadanie. W okresie błyskawicznej integracji z pozostałymi elementami frontendu, wykorzystywałem narzędzia GenAI do wyszukiwania błędów w kodzie, jak i ogólnej pomocy w rozwiązywaniu powstałych problemów.
+
+\subsubsection*{Bartłomiej Ciupak}
+Nie wykorzystałem GenAI w projekcie.
+
+\subsubsection*{Jakub Haraszkiewicz}
+W pierwszych fazach projektowania frontend'u wykorzystałem Deepseek do stworzenia wstępnej wersji Panelu z drzewkiem / opisem zadania, którą potem w większości edytowałem aby dostosować do mojej wizji. W międzyczasie, korzystałem z GenAI aby wyszukiwać informacje dotyczące drobnych zagwostek, przykładowo do pomocy ze stworzeniem plików CSS.
+\subsubsection*{Jan Machowski}
+Z uwagi na moje niskie zapoznanie się z tematem dostosowywania modeli LLM przed tym projektem, wykorzystałem GenAI (Claude) w celu stworzenia podsumowania najistotniejszych aspektów dostosowywania modelu. Oczywiście, po przeczytaniu podsumowania zrobiłem własny research, aby potwierdzić informacje które otrzymałem i móc odpowiednio dostosować model. GenAI wykorzystywałem również w celu debugowania problemów, które nie wiedziałem jak rozwiązać - przykładowo, błąd z modułem \texttt{multiprocessing} w systemie Windows (opisany w sekcji \ref{ssec:problem_tokenization}).  
+
+\subsubsection*{Karolina Wiśniewska}
+Wykorzystałam GenAI do niewielkiej pomocy w tworzeniu kodu do przykładowych zadań, w językach z którymi nie mam dużego doświadczenia (np PHP). 
 
 \section{Backend systemu}
 \subsection{Architektura systemu}
@@ -642,7 +746,7 @@ Frontend aplikacji umożliwia wykonywanie zadań programistycznych i śledzenie 
     \item Analiza wstępnych założeń projektu;
     \item Projekt interfejsu graficznego (makiety);
     \item Implementacja struktury komponentów interfejsu graficznego;
-    \item Integracja z warstwą Backend;
+    \item Integracja z warstwą backend;
     \item Testy integracyjne systemu.
 \end{enumerate}
 
@@ -1036,7 +1140,7 @@ Przejście do edytora kodu wyświetla widok kodowania, gdzie użytkownik może r
     \caption{Zmieniona szerokość paneli bocznych.}
 \end{figure}
 
-\subsubsection{Integracja z API Backendowym}
+\subsubsection{Integracja z API backendowym}
 Komponent po zamontowaniu (\texttt{useEffect}) wykonuje asynchroniczne zapytanie pobierające szczegóły zadania na podstawie parametrów \texttt{topic} oraz \texttt{id} przekazanych z adresu URL.
 
 \subsubsection{Zarządzanie stanem środowiska}
@@ -1064,7 +1168,7 @@ Przeciąganie paneli bocznych zrealizowano za pomocą komponentu \texttt{DragDro
 \end{figure}
 
 \subsection{Podsumowanie i wnioski}
-Projekt Figma znacząco usprawnił implementację komponentów i ich kompozycję w pełne ekrany. Najbardziej znaczącym problemem z projektem i implementacją frontendu były niesprecyzowane wymagania dotyczące tego, co sama aplikacja ma dokładnie robić i opieranie się wyłącznie na ogólnym opisie projektu. Poskutkowało to zaprojektowaniem kilku elementów, które ostatecznie okazały się niepotrzebne. Brak sprecyzowanych wymagań poskutkował również niezgodnością interfejsów wystawianych przez Backend i wymaganych przez Frontend, co wymagało późniejszych poprawek w fazie integracji obu projektów. Ukończenie frontendu przed otrzymaniem pierwszych przykładowych zadań również spotkało się z problemem niedopasowania interfejsu frontendu i proponowanego szablonu zadań. Frontend przewidywał jedynie zadania programistyczne oparte o wiele plików, bez uwzględnienia zadań z krótką tekstową odpowiedzią, które zostały zaproponowane później. Problemy uogólnić można do nieujednoliconych interfejsów, braku precyzyjnych wymagań, braku komunikacji zespołowej, braku spotkań statusowych i niewykorzystania systemów do zarządzania zadaniami. Głównym wnioskiem wyciągniętym z projektu jest zdanie sobie sprawy z istoty komunikacji w zespole i tego, jak ważną rolę pełnią spotkania statusowe. Implementacja frontendu, jak i backendu, powinna nastąpić dopiero po otrzymaniu jednolitych wymagań biznesowych. Pozwoliłoby to uniknąć większości napotkanych problemów.
+Projekt Figma znacząco usprawnił implementację komponentów i ich kompozycję w pełne ekrany. Najbardziej znaczącym problemem z projektem i implementacją frontendu były niesprecyzowane wymagania dotyczące tego, co sama aplikacja ma dokładnie robić i opieranie się wyłącznie na ogólnym opisie projektu. Poskutkowało to zaprojektowaniem kilku elementów, które ostatecznie okazały się niepotrzebne. Brak sprecyzowanych wymagań poskutkował również niezgodnością interfejsów wystawianych przez backend i wymaganych przez Frontend, co wymagało późniejszych poprawek w fazie integracji obu projektów. Ukończenie frontendu przed otrzymaniem pierwszych przykładowych zadań również spotkało się z problemem niedopasowania interfejsu frontendu i proponowanego szablonu zadań. Frontend przewidywał jedynie zadania programistyczne oparte o wiele plików, bez uwzględnienia zadań z krótką tekstową odpowiedzią, które zostały zaproponowane później. Problemy uogólnić można do nieujednoliconych interfejsów, braku precyzyjnych wymagań, braku komunikacji zespołowej, braku spotkań statusowych i niewykorzystania systemów do zarządzania zadaniami. Głównym wnioskiem wyciągniętym z projektu jest zdanie sobie sprawy z istoty komunikacji w zespole i tego, jak ważną rolę pełnią spotkania statusowe. Implementacja frontendu, jak i backendu, powinna nastąpić dopiero po otrzymaniu jednolitych wymagań biznesowych. Pozwoliłoby to uniknąć większości napotkanych problemów.
 
 \newpage
 
@@ -1120,7 +1224,6 @@ W celu stworzenia modelu \emph{SCLA\_ML\_vuln\_detector} wykorzystano następuj�
         Framework treningowy        & Transformers + TRL + Xformers     & 5.5.0 / 0.8.x \\
         Uczenie głębokie            & PyTorch                           & 2.11.0+cu128 \\
         Zestaw narzędzi CUDA        & NVIDIA CUDA                       & 12.8 \\
-        % Backend uwagi               & Xformers                          & 0.0.35 \\
         Serwer inferencji           & Ollama                            & Najnowsza \\
         Konteneryzacja              & Docker + NVIDIA CTK               & Najnowsza \\
         Język prog. skryptów        & Python                            & 3.12 \\
@@ -1626,9 +1729,7 @@ nothing else:
 - SQL Injection
 - Cross-Site Scripting (XSS)
 - Command Injection
-- Path Traversal
 - Buffer Overflow
-- Insecure Deserialization
 - No Vulnerability
 
 Do not explain. Do not add any extra text. Output only the label.
@@ -1647,7 +1748,7 @@ W celu odtworzenia modelu za pomocą \texttt{ollama}, należy wykonać wstawić 
 następujące polecenie:
 \begin{tcolorbox}
 \begin{verbatim}
-ollama create SCLA_ML_vuln_detector -f Modelfil
+ollama create SCLA_ML_vuln_detector -f Modelfile
 \end{verbatim}    
 \end{tcolorbox}
 
@@ -1894,7 +1995,7 @@ występuje podatność SQL Injection. Następnie wyjaśnij, co się stanie, gdy 
 \end{verbatim}
 \end{tcolorbox}
 
-\item \textbf{[Łatwy]} Atakujący wpisuje w pole hasła wartość \texttt{haslo' OR '1'='1}. Zakładając, że oryginalne zapytanie ma
+\item \textbf{[Łatwy]} Atakujący wpisuje w pole nazwy użytkownika wartość \texttt{haslo' OR '1'='1}. Zakładając, że oryginalne zapytanie ma
 postać:
 \begin{tcolorbox}
 SELECT * FROM users WHERE user='X'
@@ -1947,7 +2048,7 @@ def get_user_C(uid):
             email TEXT UNIQUE, password\_hash TEXT, created\_at TEXT)},
             jeśli nie istnieje;
     \item hashuje hasło używając \texttt{hashlib.pbkdf2\_hmac}
-            z losową solą (salt) --- sola musi być przechowywana
+            z losową solą (salt) - sól musi być przechowywana
             razem z hashem;
     \item zapisuje dane za pomocą \emph{parametryzowanych}
             zapytań SQL;
@@ -1988,7 +2089,7 @@ W tym rozdziale opisany zostanie inny atak z kategorii \emph{wstrzyknięcia kodu
 \textbf{Cross-Site Scripting (XSS)}.
 
 \textbf{Cross-Site Scripting} to atak polegający na wstrzyknięciu złośliwego kodu skryptowego wykorzystującego \emph{inline script}
-(najczęściej JavaScript) do stron internetowych, przez co \emph{osadzając złośliwą treść w stronach}, które następnie są 
+(najczęściej JavaScript) do stron internetowych, przez co \emph{osadzając złośliwą treść w stronach}, która następnie są 
 \emph{wyświetlane innym użytkownikom}. W odróżnieniu od SQL Injection, gdzie celem ataku jest serwer i baza danych, 
 w XSS celem jest \emph{przeglądarka ofiary} - atakujący dąży do wykonania złośliwego kodu przez użytkownika, gdy ten wchodzi na zaufaną stronę z osadzonym, złośliwym kodem.
 W ten sposób, atakujący są w stanie obejść niektóre mechanizmy kontroli dostępu do danych.
@@ -2011,7 +2112,6 @@ która wchodzi w daną stronę. \emph{<script>} może być połączone z wieloma
     \item \emph{eval} - wykonanie i ewaluacja dowolnego skryptu JavaScript;
     \item \emph{atob} - ASCII-to-Base64, funkcja pozwalająca na ukrycie złośliwego kodu poprzez zakodowanie go w systemie base64.
 \end{itemize}
-\emph{fetch}
 
 Rozważmy prosty przykład aplikacji webowej w języku Python (Flask), podatnej na atak XSS, która wyświetla powitalny komunikat
 z nazwą użytkownika pobraną z parametru URL:

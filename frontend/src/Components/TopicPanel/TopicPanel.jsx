@@ -30,7 +30,7 @@ function TopicPanel({topic}) {
                     </div>
                         <div className={styles.progressBarContainer}>
                             {exerciseList == null ? (
-                                <div className={styles.loading}>Loading...</div>
+                                <div className={styles.loading}>Ładowanie...</div>
                             ) : (
                                 ['easy', 'medium', 'hard'].map((diff) => (
                                     <ProgresBar

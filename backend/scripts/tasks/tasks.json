@@ -145,7 +145,7 @@
     "num": 4,
     "difficulty": "medium",
     "languages": [
-      "python"
+      "JavaScript"
     ],
     "description": "Przeanalizuj poniższy kod JavaScript pod kątem podatności DOM-based XSS. Wyjaśnij sobie, dlaczego kod jest podatny, zauważ konkretną linię. Popraw kod, zastępując innerHTML bezpieczną alternatywą i wyjaśnij, dlaczego ta zmiana eliminuje podatność.",
     "files": [

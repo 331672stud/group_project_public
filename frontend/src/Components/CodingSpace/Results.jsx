@@ -24,7 +24,7 @@ export function Results() {
         <div className={styles.instructions}>
             <div>
                 <h3>Wyniki</h3>
-                {result === null ? 'Loading...' : 
+                {result === null ? 'Ładowanie...' : 
                 <table>
                         <tbody>
                         {Object.entries(result).map(([key, value]) => {

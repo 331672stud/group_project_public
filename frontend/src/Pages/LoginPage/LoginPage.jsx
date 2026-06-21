@@ -7,7 +7,7 @@ export default function LoginPage() {
 
     return <>
         <div className={styles.wrapper}>
-            <Label text={"Learn Safe Coding"} size={'large'} weight={'bold'} />
+            <Label text={"Safe Coding Learning App"} size={'large'} weight={'bold'} />
             <button className={styles.button} onClick={login}>USOS Login</button>
         </div>
 
